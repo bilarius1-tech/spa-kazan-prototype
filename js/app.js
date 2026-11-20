@@ -37,8 +37,9 @@
       else {
         res.extraKm = Math.max(0, D - P.D0);
         res.travelRaw = P.T + res.extraKm * P.R;
-        res.travel = Math.max(Math.ceil(res.travelRaw / (P.roundTo || 1)) * (P.roundTo || 1), P.Tmin);
-        res.minApplied = res.travel > res.travelRaw;
+        var rounded = Math.ceil(res.travelRaw / (P.roundTo || 1)) * (P.roundTo || 1);
+        res.travel = Math.max(rounded, P.Tmin);
+        res.minApplied = P.Tmin > rounded;
       }
     }
     if (res.travel != null) res.P = S + res.travel;
