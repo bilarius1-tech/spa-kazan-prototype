@@ -4,14 +4,15 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var rub = function (n) { return Math.round(n).toLocaleString("ru-RU").replace(/,/g, " ") + " ₽"; };
-  var svcById = {}; D.services.forEach(function (s) { svcById[s.id] = s; });
-  var specById = {}; D.specialists.forEach(function (s) { specById[s.id] = s; });
+  var Store = window.SpaStore;
+  var svcById = function (id) { return Store.svcById(id) || { title: id, duration: 0, price: 0 }; };
+  var specById = function (id) { return Store.specById(id); };
   var HOLD_KEY = "spaKazanDemoHolds";
 
   var state = { step: 1, spec: null, svcs: [], place: null, day: null, slot: null, travel: null };
 
   /* ---------- helpers ---------- */
-  function priceFor(spec, sid) { return (spec && spec.priceOverride && spec.priceOverride[sid]) || svcById[sid].price; }
+  function priceFor(spec, sid) { return Store.priceFor(spec, sid); }
   function toMin(t) { var p = t.split(":"); return +p[0] * 60 + +p[1]; }
   function fmt(m) { var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? "0" : "") + h + ":" + (mm < 10 ? "0" : "") + mm; }
   function durLabel(m) { var h = Math.floor(m / 60), mm = m % 60; return (h ? h + " ч " : "") + (mm ? mm + " мин" : "").trim(); }
@@ -24,52 +25,13 @@
   function dayKey(d) { return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
   function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 
-  /* Расчёт цены: P = S + max(T + max(0, D − D0) × R, Tmin); D > Dmax — ручной расчёт */
-  function calc() {
-    var S = 0, dur = 0;
-    state.svcs.forEach(function (id) { S += priceFor(state.spec, id); dur += svcById[id].duration; });
-    var res = { S: S, dur: dur, D: null, travel: null, out: false, P: null };
-    if (state.spec && state.place) {
-      var P = C.pricing;
-      var D = Math.round(haversine(state.spec.base, state.place) * P.roadFactor * 10) / 10;
-      res.D = D;
-      if (D > P.Dmax) { res.out = true; }
-      else {
-        res.extraKm = Math.max(0, D - P.D0);
-        res.travelRaw = P.T + res.extraKm * P.R;
-        var rounded = Math.ceil(res.travelRaw / (P.roundTo || 1)) * (P.roundTo || 1);
-        res.travel = Math.max(rounded, P.Tmin);
-        res.minApplied = P.Tmin > rounded;
-      }
-    }
-    if (res.travel != null) res.P = S + res.travel;
-    return res;
-  }
+  /* Расчёт цены — общий с админкой (js/store.js): P = S + max(T + max(0, D − D0) × R, Tmin) */
+  function calc() { return Store.calcPrice(state.spec, state.svcs, state.place); }
 
-  /* ---------- демо-расписание ---------- */
-  function getHolds() { try { return JSON.parse(localStorage.getItem(HOLD_KEY) || "[]"); } catch (e) { return []; } }
-  function saveHolds(h) { try { localStorage.setItem(HOLD_KEY, JSON.stringify(h)); } catch (e) {} }
-  function liveHolds() {
-    var now = Date.now();
-    return getHolds().filter(function (h) { return h.status === "confirmed" || h.expires > now; });
-  }
-  // Занятые интервалы [start,end) в минутах: детерминированные демо-брони + заявки из этого браузера
-  function busyFor(specId, date) {
-    var k = specId + "|" + dayKey(date), h = hash(k), list = [];
-    var count = 1 + (h % 3);
-    for (var i = 0; i < count; i++) {
-      var hh = hash(k + i);
-      var start = toMin(C.schedule.dayStart) + (hh % 22) * 30;
-      var len = [60, 90, 120][(hh >>> 5) % 3];
-      list.push({ s: start, e: start + len + C.schedule.travelBufferMin, kind: "busy" });
-    }
-    liveHolds().forEach(function (x) {
-      if (x.spec === specId && x.day === dayKey(date)) list.push({ s: x.s, e: x.e, kind: x.status === "confirmed" ? "busy" : "hold" });
-    });
-    return list;
-  }
+  /* ---------- расписание: заявки + ручные блокировки из общего хранилища ---------- */
+  function busyFor(specId, date) { return Store.busy(specId, dayKey(date)); }
   function slotsFor(spec, date, dur) {
-    var out = [], start = toMin(C.schedule.dayStart), end = toMin(C.schedule.dayEnd);
+    var out = [], start = toMin(spec.workStart || C.schedule.dayStart), end = toMin(spec.workEnd || C.schedule.dayEnd);
     var busy = busyFor(spec.id, date), now = new Date();
     var isToday = dayKey(now) === dayKey(date), nowMin = now.getHours() * 60 + now.getMinutes() + 60;
     var need = Math.max(dur, 30) + C.schedule.travelBufferMin;
@@ -93,17 +55,19 @@
 
   /* ---------- рендер витрины ---------- */
   function picture(spec, sizes, cls, alt) {
+    if (spec.photo) return '<img class="' + (cls || "") + '" src="' + spec.photo + '" alt="' + (alt || "") + '" loading="lazy" decoding="async" width="400" height="500">';
+    if (!spec.img) return '<div class="ph-photo" role="img" aria-label="Фото не загружено">' + spec.name.charAt(0) + '</div>';
     return '<picture><source type="image/webp" srcset="images/' + spec.img + '-400.webp 400w, images/' + spec.img + '-800.webp 800w" sizes="' + sizes + '">' +
       '<img class="' + (cls || "") + '" src="images/' + spec.img + '-400.webp" alt="' + (alt || "") + '" loading="lazy" decoding="async" width="400" height="500"></picture>';
   }
   function renderSpecs() {
-    $("#specGrid").innerHTML = D.specialists.map(function (s) {
+    $("#specGrid").innerHTML = Store.activeSpecs().map(function (s) {
       var nf = nextFree(s);
       return '<article class="spec">' +
         '<div class="spec__media"><span class="badge">Пример</span>' + picture(s, "(min-width:960px) 340px, (min-width:600px) 50vw, 100vw", "", "Фото-пример: массажистка за работой") + '</div>' +
         '<div class="spec__body"><h3 class="spec__name">' + s.name + '</h3><p class="spec__role">' + s.role + '</p>' +
         '<p class="spec__text">' + s.text + '</p><p class="spec__meta">' + s.exp + ' · выезжает из: ' + s.base.label + '</p>' +
-        '<ul class="tags" aria-label="Услуги">' + s.services.map(function (id) { return "<li>" + svcById[id].title + "</li>"; }).join("") + "</ul>" +
+        '<ul class="tags" aria-label="Услуги">' + s.services.filter(function (id) { var x = Store.svcById(id); return x && x.active !== false; }).map(function (id) { return "<li>" + svcById(id).title + "</li>"; }).join("") + "</ul>" +
         '<p class="spec__next">' + (nf ? "Ближайшее свободное время: " + nf : "Нет свободного времени на 2 недели") + "</p>" +
         '<button class="btn btn--line btn--sm" type="button" data-pick="' + s.id + '"' + (nf ? "" : " disabled") + ' aria-label="Записаться: ' + s.name + '">Записаться</button></div></article>';
     }).join("");
@@ -116,14 +80,14 @@
     });
   }
   function renderServices() {
-    $("#svcList").innerHTML = D.services.map(function (s) {
+    $("#svcList").innerHTML = Store.activeServices().map(function (s) {
       return '<li class="svc"><h3>' + s.title + '</h3><div class="svc__price">от ' + rub(s.price) + "<small>" + s.duration + " мин · пример</small></div><p>" + s.text + "</p></li>";
     }).join("");
   }
 
   /* ---------- шаги формы ---------- */
   function renderSpecChoices() {
-    $("#specChoices").innerHTML = D.specialists.map(function (s) {
+    $("#specChoices").innerHTML = Store.activeSpecs().map(function (s) {
       return '<label class="choice"><input type="radio" name="spec" value="' + s.id + '"' + (state.spec && state.spec.id === s.id ? " checked" : "") + '><span class="choice__mark" aria-hidden="true"></span>' +
         '<img class="choice__img" src="' + avatar(s) + '" alt="" width="56" height="56" loading="lazy" decoding="async">' + '<span class="choice__main"><span class="choice__title">' + s.name + '</span><span class="choice__sub"> · ' + s.role + "</span></span></label>";
     }).join("");
@@ -131,7 +95,7 @@
   }
   function selectSpec(id) {
     var prev = state.spec && state.spec.id;
-    state.spec = specById[id];
+    state.spec = specById(id);
     if (prev !== id) {
       state.svcs = state.svcs.filter(function (s) { return state.spec.services.indexOf(s) >= 0; });
       state.slot = null;
@@ -140,7 +104,7 @@
   }
   function renderSvcChoices() {
     var spec = state.spec;
-    $("#svcChoices").innerHTML = D.services.map(function (s) {
+    $("#svcChoices").innerHTML = Store.activeServices().map(function (s) {
       var avail = !spec || spec.services.indexOf(s.id) >= 0;
       return '<label class="choice choice--check"><input type="checkbox" name="svc" value="' + s.id + '"' + (state.svcs.indexOf(s.id) >= 0 ? " checked" : "") + (avail ? "" : " disabled") +
         '><span class="choice__mark" aria-hidden="true"></span><span class="choice__main"><span class="choice__title">' + s.title + '</span><br><span class="choice__sub">' +
@@ -243,7 +207,11 @@
   }
 
   /* сводка */
-  function avatar(spec) { return "images/" + spec.img.replace("specialist", "avatar") + ".webp"; }
+  function avatar(spec) {
+    if (spec.avatar) return spec.avatar;
+    if (!spec.img) return "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#E9DDC6"/><text x="32" y="42" font-size="28" text-anchor="middle" font-family="Georgia" fill="#352A20">' + spec.name.charAt(0) + '</text></svg>');
+    return "images/" + spec.img.replace("specialist", "avatar") + ".webp";
+  }
   function who(spec) {
     return '<span class="who"><img src="' + avatar(spec) + '" alt="" width="32" height="32" decoding="async">' + spec.name + "</span>";
   }
@@ -258,7 +226,7 @@
   function rows(r) {
     var out = [];
     out.push(["Специалистка", state.spec ? who(state.spec) : "—"]);
-    out.push(["Услуги", state.svcs.length ? state.svcs.map(function (id) { return svcById[id].title; }).join(", ") : "—"]);
+    out.push(["Услуги", state.svcs.length ? state.svcs.map(function (id) { return svcById(id).title; }).join(", ") : "—"]);
     out.push(["Длительность", r.dur ? durLabel(r.dur) : "—"]);
     out.push(["Адрес", state.place ? state.place.name + ($("#house").value ? ", д. " + $("#house").value : "") : "—"]);
     out.push(["Дата и время", state.day && state.slot != null ? state.day.toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" }) + ", " + fmt(state.slot) + "–" + fmt(state.slot + r.dur) : "—"]);
@@ -329,11 +297,13 @@
   /* отправка (демо) */
   var lastHold = null, lastFocus = null;
   function submit() {
-    var r = calc(), holds = getHolds();
-    lastHold = { id: "D-" + Date.now().toString(36).toUpperCase(), spec: state.spec.id, day: dayKey(state.day), s: state.slot, e: state.slot + r.dur + C.schedule.travelBufferMin,
-      status: "hold", expires: Date.now() + C.schedule.holdMinutes * 60000 };
-    holds.push(lastHold); saveHolds(holds);
-    $("#modalLead").textContent = "Номер заявки " + lastHold.id + " (демо). Время у " + state.spec.name + " держится за вами " + C.schedule.holdMinutes + " минут — до " + fmt(new Date(lastHold.expires).getHours() * 60 + new Date(lastHold.expires).getMinutes()) + ". Администратор перезвонит для подтверждения.";
+    var r = calc(), list = Store.requests();
+    lastHold = Store.makeRequest({ spec: state.spec.id, svcs: state.svcs.slice(), day: dayKey(state.day), s: state.slot, place: state.place,
+      house: $("#house").value.trim(), flat: $("#flat").value.trim(), entr: $("#entr").value.trim(),
+      name: $("#name").value.trim(), phone: $("#phone").value.trim(), comment: $("#comment").value.trim() });
+    list.push(lastHold); Store.saveRequests(list);
+    var ex = new Date(lastHold.expires);
+    $("#modalLead").textContent = "Номер заявки " + lastHold.id + " (демо). Специалистка: " + state.spec.name + ". Выбранное время держится за вами " + C.schedule.holdMinutes + " минут — до " + fmt(ex.getHours() * 60 + ex.getMinutes()) + ". Администратор перезвонит для подтверждения.";
     $("#modalSummary").innerHTML = rows(r).concat([["Итого предварительно", r.P != null ? rub(r.P) : rub(r.S) + " + выезд вручную"]]).map(function (x) { return "<div><dt>" + x[0] + "</dt><dd>" + x[1] + "</dd></div>"; }).join("");
     renderTimeline(1); $("#simConfirm").hidden = false;
     lastFocus = document.activeElement;
@@ -345,9 +315,7 @@
     $("#timeline").innerHTML = items.map(function (t, i) { return '<li class="' + (i < stage ? "is-done" : i === stage ? "is-current" : "") + '">' + t + (i === stage ? " — ожидаем" : "") + "</li>"; }).join("");
   }
   $("#simConfirm").addEventListener("click", function () {
-    var holds = getHolds();
-    holds.forEach(function (h) { if (lastHold && h.id === lastHold.id) { h.status = "confirmed"; } });
-    saveHolds(holds);
+    if (lastHold) Store.updateRequest(lastHold.id, function (h) { h.status = "confirmed"; h.history.push({ at: Date.now(), text: "Подтверждена (демо-кнопка на сайте)" }); });
     $("#modalTitle").textContent = "Заявка подтверждена (демо)";
     renderTimeline(2); this.hidden = true; $(".modal__box").focus(); renderSpecs();
   });
@@ -376,6 +344,25 @@
     io.observe(f);
   })();
 
+  /* настройки салона из админки */
+  function applySettings() {
+    var st = Store.settings(), dl = $("#contactsList");
+    if (dl) dl.innerHTML = [["Телефон", st.phone], ["Telegram", st.telegram], ["Часы работы", st.hours], ["Зона выезда", st.zone]].map(function (x) {
+      var d = document.createElement("dd"); d.textContent = x[1]; return "<div><dt>" + x[0] + "</dt>" + d.outerHTML + "</div>"; }).join("");
+    if (st.heroTitle) $("#hero-title").textContent = st.heroTitle;
+    if (st.heroLead) $(".hero__lead").textContent = st.heroLead;
+  }
+  /* изменения из админки в соседней вкладке */
+  window.addEventListener("storage", function (e) {
+    if (!e.key || e.key.indexOf("spaKazanDemo") !== 0) return;
+    Store.applyAll();
+    if (state.spec) state.spec = specById(state.spec.id) || null;
+    renderSpecs(); renderServices(); renderSpecChoices(); renderSvcChoices(); renderSummary(); updateDistance();
+    if (state.step === 4) renderSlots();
+    applySettings();
+  });
+
   /* init */
+  applySettings();
   renderSpecs(); renderServices(); renderSpecChoices(); renderSvcChoices(); renderSummary(); goStep(1);
 })();

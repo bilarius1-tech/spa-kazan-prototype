@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Админка (демо) — Лучший выездной спа в Казани</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<div class="demo-bar" role="note">Прототип админки: вход без пароля, данные хранятся только в этом браузере (localStorage) и общие с демо-сайтом.</div>
+
+<section class="login" id="login" hidden aria-labelledby="loginTitle">
+  <div class="login__card">
+    <p class="eyebrow">Лучший выездной спа · админка</p>
+    <h1 id="loginTitle">Вход для администратора</h1>
+    <p class="muted">В рабочей версии — вход по Telegram или паролю. Здесь — демо без пароля.</p>
+    <button class="btn btn--gold" id="loginBtn" type="button">Войти как Регина (демо)</button>
+    <p class="small muted"><a href="../">← Вернуться на сайт</a></p>
+  </div>
+</section>
+
+<div class="app" id="app" hidden>
+  <header class="topbar">
+    <button class="burger" id="burger" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Меню">☰</button>
+    <span class="topbar__title">Админка <span class="muted">(демо)</span></span>
+    <span class="topbar__user">Регина · администратор</span>
+  </header>
+  <nav class="sidebar" id="sidebar" aria-label="Разделы админки">
+    <div class="sidebar__brand">Лучший выездной <em>спа</em><small>админка · прототип</small></div>
+    <a href="#requests" data-nav="requests">Заявки <span class="count" id="holdCount" aria-label="ожидают подтверждения"></span></a>
+    <a href="#calendar" data-nav="calendar">Календарь</a>
+    <a href="#specialists" data-nav="specialists">Специалистки</a>
+    <a href="#services" data-nav="services">Услуги</a>
+    <a href="#pricing" data-nav="pricing">Выезд и цены</a>
+    <a href="#settings" data-nav="settings">Настройки</a>
+    <div class="sidebar__foot">
+      <a href="../" target="_blank" rel="noopener">Открыть сайт ↗</a>
+      <button type="button" class="link" id="resetBtn">Сбросить демо-данные</button>
+      <button type="button" class="link" id="logoutBtn">Выйти</button>
+    </div>
+  </nav>
+  <main class="main" id="main" tabindex="-1"></main>
+</div>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" class="dlg__form" id="dlgForm">
+    <h2 id="dlgTitle"></h2>
+    <div id="dlgBody"></div>
+    <div class="dlg__actions">
+      <button class="btn btn--line" value="cancel" type="submit" formnovalidate>Отмена</button>
+      <button class="btn btn--gold" value="ok" id="dlgOk" type="submit">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

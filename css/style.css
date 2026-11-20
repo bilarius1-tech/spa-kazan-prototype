@@ -332,3 +332,5 @@ body.no-scroll{overflow:hidden}
 .section--dark .eyebrow{color:var(--bg)}
 .hero .eyebrow--light{color:var(--bg)}
 @media(max-width:619px){.progress li{min-width:0;white-space:nowrap}.progress li:not(.is-current){font-size:0;flex:0 0 34px}.progress li:not(.is-current)::before{font-size:12px;content:counter(p)}.progress li.is-current{flex:1}}
+.footer__admin{color:var(--on-dark-muted);margin-left:10px}
+.ph-photo{width:100%;height:100%;display:grid;place-items:center;font:500 72px var(--serif);color:var(--accent-ink);background:var(--bg)}
