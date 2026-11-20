@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор мастера (демо) — Лучший выездной спа в Казани</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="master">
+<div class="demo-bar" role="note">Внутренняя страница мастера (демо): вход без пароля, цены и зоны — из админки «Выезд и цены».</div>
+
+<section class="login" id="login" hidden aria-labelledby="loginTitle">
+  <form class="login__card" id="loginForm">
+    <p class="eyebrow">Лучший выездной спа · для мастеров</p>
+    <h1 id="loginTitle">Калькулятор мастера</h1>
+    <p class="muted">В рабочей версии — личный вход мастера. Здесь — демо.</p>
+    <div class="field"><label for="who">Мастер</label><select id="who"></select></div>
+    <button class="btn btn--gold" id="loginBtn" type="submit">Войти как мастер (демо)</button>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="topbar">
+    <span class="topbar__title">Калькулятор мастера <span class="muted">(демо)</span></span>
+    <span class="topbar__user" id="whoName"></span>
+    <button type="button" class="btn btn--sm" id="logoutBtn">Выйти</button>
+  </header>
+  <main class="main" id="main" style="max-width:1100px;margin:0 auto">
+    <div class="page-head"><div><h1>Расчёт визита</h1><p id="baseNote"></p></div></div>
+    <div class="mc">
+      <div>
+        <section class="panel"><h2>Услуги</h2><div class="mc-svc" id="mSvc"></div></section>
+        <section class="panel">
+          <h2>Адрес клиента</h2>
+          <div class="field combo">
+            <label for="mAddr">Улица или посёлок</label>
+            <input id="mAddr" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="mAddrList" placeholder="Например, Победы">
+            <ul class="combo__list" id="mAddrList" role="listbox" hidden></ul>
+          </div>
+          <div class="field"><label for="mHouse">Дом</label><input id="mHouse" type="text" autocomplete="off"></div>
+          <p class="small muted">Подсказки — тот же демо-справочник улиц, что в форме на сайте (координаты приблизительные).</p>
+        </section>
+        <section class="panel"><h2>Дополнительно</h2><label class="check"><input type="checkbox" id="mCouch"> <span id="mCouchLbl">Аренда кушетки</span></label></section>
+      </div>
+      <section class="panel" aria-labelledby="resTitle">
+        <h2 id="resTitle">Итог</h2>
+        <table class="calc" id="mCalc" aria-live="polite"></table>
+        <div class="mc-total"><span>К оплате</span><strong id="mTotal">—</strong></div>
+        <div class="actions"><button class="btn btn--gold" type="button" id="mQrBtn" disabled>Сформировать QR-код для оплаты</button></div>
+        <div id="mQr"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/master.js"></script>
+</body>
+</html>

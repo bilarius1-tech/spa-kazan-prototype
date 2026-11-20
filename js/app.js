@@ -64,25 +64,41 @@
     $("#specGrid").innerHTML = Store.activeSpecs().map(function (s) {
       var nf = nextFree(s);
       return '<article class="spec">' +
-        '<div class="spec__media"><span class="badge">Пример</span>' + picture(s, "(min-width:960px) 340px, (min-width:600px) 50vw, 100vw", "", "Фото-пример: массажистка за работой") + '</div>' +
+        '<div class="spec__media"><span class="badge">Фото — демо</span>' + picture(s, "(min-width:960px) 340px, (min-width:600px) 50vw, 100vw", "", "Фото-пример: мастер за работой") + '</div>' +
         '<div class="spec__body"><h3 class="spec__name">' + s.name + '</h3><p class="spec__role">' + s.role + '</p>' +
-        '<p class="spec__text">' + s.text + '</p><p class="spec__meta">' + s.exp + ' · выезжает из: ' + s.base.label + '</p>' +
+        '<p class="spec__text">' + s.text + '</p><p class="spec__meta">' + s.exp + ' · район: ' + s.base.label + '</p>' +
         '<ul class="tags" aria-label="Услуги">' + s.services.filter(function (id) { var x = Store.svcById(id); return x && x.active !== false; }).map(function (id) { return "<li>" + svcById(id).title + "</li>"; }).join("") + "</ul>" +
         '<p class="spec__next">' + (nf ? "Ближайшее свободное время: " + nf : "Нет свободного времени на 2 недели") + "</p>" +
-        '<button class="btn btn--line btn--sm" type="button" data-pick="' + s.id + '"' + (nf ? "" : " disabled") + ' aria-label="Записаться: ' + s.name + '">Записаться</button></div></article>';
+        '<button class="btn btn--gold btn--sm" type="button" data-pick="' + s.id + '"' + (nf ? "" : " disabled") + ' aria-label="Записаться к этому мастеру: ' + s.name + '">Записаться к этому мастеру</button></div></article>';
     }).join("");
     $$("[data-pick]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        selectSpec(b.getAttribute("data-pick"));
-        goStep(2);
-        $("#booking").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-      });
+      b.addEventListener("click", function () { openBooking({ spec: b.getAttribute("data-pick") }); });
     });
   }
+  var priceFilter = "all";
+  function catOf(s) { return s.cat || "massage"; }
   function renderServices() {
-    $("#svcList").innerHTML = Store.activeServices().map(function (s) {
-      return '<li class="svc"><h3>' + s.title + '</h3><div class="svc__price">от ' + rub(s.price) + "<small>" + s.duration + " мин · пример</small></div><p>" + s.text + "</p></li>";
-    }).join("");
+    var list = Store.activeServices().filter(function (s) { return priceFilter === "all" || catOf(s) === priceFilter; });
+    $("#svcList").innerHTML = list.length ? list.map(function (s) {
+      return '<li class="svc"><h3>' + s.title + '</h3><div class="svc__price">от ' + rub(s.price) + "<small>" + s.duration + ' мин</small></div><p>' + s.text + '</p><button class="btn btn--line btn--sm svc__go" type="button" data-svc="' + s.id + '" aria-label="Записаться: ' + s.title + '">Записаться</button></li>';
+    }).join("") : '<li class="svc"><p>В этом разделе пока нет услуг.</p></li>';
+    $$("#svcList [data-svc]").forEach(function (b) { b.addEventListener("click", function () { closeDlg($("#priceDlg"), true); openBooking({ svc: b.getAttribute("data-svc") }); }); });
+    $$("#priceDlg [data-pf]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pf") === priceFilter)); });
+    /* «от …» на карточках категорий */
+    $$("[data-from]").forEach(function (el) {
+      var c = el.getAttribute("data-from"), xs = Store.activeServices().filter(function (s) { return catOf(s) === c; });
+      el.textContent = xs.length ? "от " + rub(Math.min.apply(null, xs.map(function (s) { return s.price; }))) + " · " + xs.length + " " + plural(xs.length, ["услуга", "услуги", "услуг"]) : "скоро";
+    });
+    var P = C.pricing, zt = zonesText();
+    $("#priceZones").textContent = "Выезд — отдельно: " + zt + " Цены — демо.";
+    var fz = $("#faqZones"); if (fz) fz.textContent = "Стоимость = услуги + выезд. " + (P.mode === "formula" ? "Выезд считается по расстоянию от точки мастера: базовая цена и доплата за каждый км сверх включённых." : "Выезд зависит от зоны — расстояния по дороге от нашей базы (" + P.base.label + ") до вашего адреса: " + zt) + " Оплата после сеанса по QR-коду СБП напрямую мастеру. Цены — демо.";
+  }
+  function plural(n, f) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? f[0] : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? f[1] : f[2]; }
+  function zonesText() {
+    var P = C.pricing;
+    if (P.mode === "formula") return rub(P.T) + " за первые " + P.D0 + " км, далее " + rub(P.R) + "/км, минимум " + rub(P.Tmin) + "; дальше " + P.Dmax + " км — по договорённости.";
+    var from = 0;
+    return Store.zonesOf(P).map(function (z) { var t = (from ? from + "–" + z.upTo : "до " + z.upTo) + " км — " + rub(z.price); from = z.upTo; return t; }).join(", ") + "; дальше " + Store.maxKm(P) + " км — по договорённости.";
   }
 
   /* ---------- шаги формы ---------- */
@@ -155,11 +171,13 @@
 
   function updateDistance() {
     var box = $("#distanceBox"), r = calc();
-    if (!state.place || !state.spec) { box.innerHTML = ""; return; }
+    if (!state.place || (!state.spec && C.pricing.mode === "formula")) { box.innerHTML = ""; return; }
     if (r.out) {
-      box.innerHTML = '<div class="distance__card distance__card--out">≈ ' + r.D.toLocaleString("ru-RU") + " км от " + state.spec.base.label + ". Это за пределами зоны обслуживания (" + C.pricing.Dmax + " км, демо). Заявку можно отправить — администратор рассчитает выезд вручную.</div>";
+      box.innerHTML = '<div class="distance__card distance__card--out">≈ ' + r.D.toLocaleString("ru-RU") + " км от " + r.origin + ". Это дальше зоны выезда (" + Store.maxKm() + " км, демо). Заявку можно отправить — администратор рассчитает выезд вручную.</div>";
+    } else if (r.mode === "zones") {
+      box.innerHTML = '<div class="distance__card">≈ ' + r.D.toLocaleString("ru-RU") + " км по дороге от базы (" + r.origin + "), зона " + Store.zoneLabel(r.zone) + ". Выезд: <b>" + rub(r.travel) + "</b>.</div>";
     } else {
-      box.innerHTML = '<div class="distance__card">≈ ' + r.D.toLocaleString("ru-RU") + " км по дороге от точки специалистки (" + state.spec.base.label + "). Выезд: <b>" + rub(r.travel) + "</b>" + (r.minApplied ? " (минимальная стоимость выезда)" : "") + ".</div>";
+      box.innerHTML = '<div class="distance__card">≈ ' + r.D.toLocaleString("ru-RU") + " км по дороге от точки мастера (" + r.origin + "). Выезд: <b>" + rub(r.travel) + "</b>" + (r.minApplied ? " (минимальная стоимость выезда)" : "") + ".</div>";
     }
   }
 
@@ -225,13 +243,13 @@
   }
   function rows(r) {
     var out = [];
-    out.push(["Специалистка", state.spec ? who(state.spec) : "—"]);
+    out.push(["Мастер", state.spec ? who(state.spec) : "—"]);
     out.push(["Услуги", state.svcs.length ? state.svcs.map(function (id) { return svcById(id).title; }).join(", ") : "—"]);
     out.push(["Длительность", r.dur ? durLabel(r.dur) : "—"]);
     out.push(["Адрес", state.place ? state.place.name + ($("#house").value ? ", д. " + $("#house").value : "") : "—"]);
     out.push(["Дата и время", state.day && state.slot != null ? state.day.toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" }) + ", " + fmt(state.slot) + "–" + fmt(state.slot + r.dur) : "—"]);
     out.push(["Услуги, S", r.S ? rub(r.S) : "—"]);
-    out.push(["Выезд", r.out ? "вручную" : r.travel != null ? rub(r.travel) + " (" + r.D.toLocaleString("ru-RU") + " км)" : "—"]);
+    out.push(["Выезд", r.out ? "вручную" : r.travel != null ? rub(r.travel) + " (" + r.D.toLocaleString("ru-RU") + " км" + (r.zone ? ", зона " + Store.zoneLabel(r.zone) : "") + ")" : "—"]);
     return out;
   }
   function renderSummary() {
@@ -241,6 +259,12 @@
     $("#total").textContent = r.P != null ? rub(r.P) : r.out && r.S ? rub(r.S) + " + выезд" : r.S ? "от " + rub(r.S) : "—";
     $("#totalMini").textContent = $("#total").textContent;
     var P = C.pricing;
+    if (P.mode !== "formula") {
+      $("#formulaHead").textContent = "Итог = услуги + выезд по зоне от базы (" + P.base.label + ").";
+      $("#formulaVals").textContent = "Зоны (демо): " + zonesText() + (r.P != null ? " Сейчас: " + rub(r.S) + " + " + rub(r.travel) + " = " + rub(r.P) + "." : "");
+      return;
+    }
+    $("#formulaHead").innerHTML = "P = S + max(T + max(0, D − D<sub>0</sub>) × R, T<sub>min</sub>)";
     $("#formulaVals").textContent = "Демо-значения: T = " + rub(P.T) + ", D₀ = " + P.D0 + " км, R = " + rub(P.R) + "/км, Tmin = " + rub(P.Tmin) + ", макс. зона " + P.Dmax + " км, выезд округляется вверх до " + (P.roundTo || 1) + " ₽." +
       (r.travel != null ? " Сейчас: " + rub(r.S) + " + max(" + rub(P.T) + " + " + (Math.round(r.extraKm * 10) / 10).toLocaleString("ru-RU") + " × " + P.R + ", " + P.Tmin + ") = " + rub(r.P) + "." : "");
   }
@@ -248,7 +272,7 @@
   /* навигация */
   function validate(step) {
     var err = "";
-    if (step === 1 && !state.spec) err = "Выберите специалистку.";
+    if (step === 1 && !state.spec) err = "Выберите мастера.";
     if (step === 2 && !state.svcs.length) err = "Отметьте хотя бы одну услугу.";
     if (step === 3) {
       if (!state.place) err = "Выберите адрес из подсказок.";
@@ -287,11 +311,12 @@
   });
   $("#backBtn").addEventListener("click", function () { if (state.step > 1) goStep(state.step - 1); });
   $("#house").addEventListener("input", renderSummary);
-  $("#phone").addEventListener("input", function (e) {
+  function maskPhone(e) {
     var d = e.target.value.replace(/\D/g, ""); if (d[0] === "8") d = "7" + d.slice(1); if (d && d[0] !== "7") d = "7" + d; d = d.slice(0, 11);
     var f = d ? "+7" : ""; if (d.length > 1) f += " (" + d.slice(1, 4); if (d.length >= 4) f += ")"; if (d.length > 4) f += " " + d.slice(4, 7); if (d.length > 7) f += "-" + d.slice(7, 9); if (d.length > 9) f += "-" + d.slice(9, 11);
     e.target.value = f;
-  });
+  }
+  $$("#phone, input[data-mask]").forEach(function (i) { i.addEventListener("input", maskPhone); });
   $("#wizard").addEventListener("submit", function (e) { e.preventDefault(); });
 
   /* отправка (демо) */
@@ -306,7 +331,8 @@
     $("#modalLead").textContent = "Номер заявки " + lastHold.id + " (демо). Специалистка: " + state.spec.name + ". Выбранное время держится за вами " + C.schedule.holdMinutes + " минут — до " + fmt(ex.getHours() * 60 + ex.getMinutes()) + ". Администратор перезвонит для подтверждения.";
     $("#modalSummary").innerHTML = rows(r).concat([["Итого предварительно", r.P != null ? rub(r.P) : rub(r.S) + " + выезд вручную"]]).map(function (x) { return "<div><dt>" + x[0] + "</dt><dd>" + x[1] + "</dd></div>"; }).join("");
     renderTimeline(1); $("#simConfirm").hidden = false;
-    lastFocus = document.activeElement;
+    closeDlg($("#bookDlg"), true);
+    lastFocus = $(".hbook");
     $("#modal").hidden = false; document.body.classList.add("no-scroll"); $(".modal__box").focus();
     renderSpecs();
   }
@@ -323,7 +349,7 @@
     $("#modal").hidden = true; document.body.classList.remove("no-scroll");
     $("#modalTitle").textContent = "Заявка отправлена, ожидайте подтверждения";
     state.slot = null; goStep(4); renderSummary();
-    if (lastFocus) lastFocus.focus();
+    if (lastFocus && lastFocus.offsetParent) lastFocus.focus();
   }
   $$("[data-close]").forEach(function (b) { b.addEventListener("click", closeModal); });
   document.addEventListener("keydown", function (e) {
@@ -349,6 +375,7 @@
     var st = Store.settings(), dl = $("#contactsList");
     if (dl) dl.innerHTML = [["Телефон", st.phone], ["Telegram", st.telegram], ["Часы работы", st.hours], ["Зона выезда", st.zone]].map(function (x) {
       var d = document.createElement("dd"); d.textContent = x[1]; return "<div><dt>" + x[0] + "</dt>" + d.outerHTML + "</div>"; }).join("");
+    var hp = $("#hPhone"); if (hp) { $(".hphone__num", hp).textContent = st.phone; hp.href = "tel:" + String(st.phone).replace(/[^\d+]/g, ""); }
     if (st.heroTitle) $("#hero-title").textContent = st.heroTitle;
     if (st.heroLead) $(".hero__lead").textContent = st.heroLead;
   }
@@ -361,6 +388,122 @@
     if (state.step === 4) renderSlots();
     applySettings();
   });
+
+
+  /* ---------- v2: диалоги (запись, прайс, сертификат) ---------- */
+  var dlgReturn = null;
+  function openDlg(d) {
+    if (!d.open) { dlgReturn = document.activeElement; d.showModal(); }
+    document.documentElement.classList.add("dlg-open");
+  }
+  function closeDlg(d, silent) {
+    if (d.open) d.close();
+    if (!$$("dialog").some(function (x) { return x.open; })) document.documentElement.classList.remove("dlg-open");
+    if (!silent && dlgReturn && dlgReturn.focus) dlgReturn.focus();
+  }
+  $$("dialog").forEach(function (d) {
+    d.addEventListener("close", function () { if (!$$("dialog").some(function (x) { return x.open; })) document.documentElement.classList.remove("dlg-open"); });
+    d.addEventListener("click", function (e) { if (e.target === d) closeDlg(d); }); /* клик по подложке */
+    $$("[data-dlg-close]", d).forEach(function (b) { b.addEventListener("click", function () { closeDlg(d); }); });
+  });
+  function openBooking(o) {
+    o = o || {};
+    $$("dialog[open]").forEach(function (d) { if (d.id !== "bookDlg") closeDlg(d, true); });
+    if (o.spec) selectSpec(o.spec);
+    if (o.svc) {
+      var sv = Store.svcById(o.svc);
+      if (state.spec && state.spec.services.indexOf(o.svc) < 0) { state.spec = null; renderSpecChoices(); }
+      if (sv && state.svcs.indexOf(o.svc) < 0) state.svcs = [o.svc];
+      state.slot = null; renderSvcChoices(); renderSummary();
+    }
+    openDlg($("#bookDlg"));
+    goStep(o.spec ? 2 : o.svc ? (state.spec ? 2 : 1) : state.step || 1);
+    var t = $('#bookDlg .panel:not([hidden]) .panel__title'); if (t) t.focus({ preventScroll: true });
+    $("#bookDlg").scrollTop = 0;
+  }
+  window.SpaOpenBooking = openBooking;
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-book], a[href='#booking']");
+    if (b) { e.preventDefault(); closeMenu(); openBooking({ svc: b.getAttribute("data-book-svc") || null }); return; }
+    var c = e.target.closest("[data-cert]");
+    if (c) { e.preventDefault(); closeMenu(); openCert(); return; }
+    var pr = e.target.closest("[data-price]");
+    if (pr) { e.preventDefault(); priceFilter = pr.getAttribute("data-price"); renderServices(); openDlg($("#priceDlg")); return; }
+    var st = e.target.closest("[data-stub]");
+    if (st) { e.preventDefault(); toastNote(st, "Ссылка появится после запуска (демо)"); }
+  });
+  $$("#priceDlg [data-pf]").forEach(function (b) { b.addEventListener("click", function () { priceFilter = b.getAttribute("data-pf"); renderServices(); }); });
+  function toastNote(el, t) { var o = el.getAttribute("title"); el.setAttribute("title", t); el.classList.add("is-noted"); setTimeout(function () { el.classList.remove("is-noted"); if (o) el.setAttribute("title", o); }, 1500); }
+
+  /* сертификат (демо, без оплаты) */
+  function openCert() { $("#certOk").hidden = true; $("#certErr").textContent = ""; openDlg($("#certDlg")); $("#certName").focus(); }
+  $("#certForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var nm = $("#certName"), ph = $("#certPhone"), ok = $("#certAgree").checked, dg = ph.value.replace(/\D/g, ""), err = "";
+    if (!nm.value.trim()) err = "Укажите имя."; else if (dg.length !== 11) err = "Проверьте телефон: нужно 11 цифр."; else if (!ok) err = "Нужно согласие на обработку данных.";
+    nm.setAttribute("aria-invalid", String(!nm.value.trim())); ph.setAttribute("aria-invalid", String(dg.length !== 11));
+    $("#certErr").textContent = err; if (err) return;
+    var amount = +($("#certForm input[name=nominal]:checked") || {}).value || 0;
+    var l = Store.addLead({ type: "certificate", name: nm.value.trim(), phone: ph.value.trim(), amount: amount, source: "Купить сертификат" });
+    $("#certOk").textContent = "Заявка " + l.id + " на сертификат " + rub(amount) + " принята (демо). Администратор перезвонит — оплата в прототипе не подключена.";
+    $("#certOk").hidden = false; $("#certForm").reset(); $("#certOk").focus && $("#certOk").setAttribute("tabindex", "-1"); $("#certOk").focus();
+  });
+
+  /* лид-форма «Получить расчёт» → обратный звонок в админке */
+  $("#leadForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var ph = $("#leadPhone"), dg = ph.value.replace(/\D/g, ""), err = "";
+    if (dg.length !== 11) err = "Проверьте телефон: нужно 11 цифр."; else if (!$("#leadAgree").checked) err = "Нужно согласие на обработку данных.";
+    ph.setAttribute("aria-invalid", String(dg.length !== 11)); $("#leadErr").textContent = err; if (err) return;
+    var l = Store.addLead({ type: "callback", phone: ph.value.trim(), source: "Форма «Получить расчёт»" });
+    $("#leadOk").textContent = "Спасибо! Заявка " + l.id + " принята — перезвоним и назовём стоимость (демо: видна в админке → «Звонки»).";
+    $("#leadOk").hidden = false; $("#leadForm").reset();
+  });
+
+  /* мобильное меню */
+  var burger = $("#burger"), nav = $("#nav");
+  function closeMenu() { if (nav.classList.contains("is-open")) { nav.classList.remove("is-open"); burger.setAttribute("aria-expanded", "false"); } }
+  burger.addEventListener("click", function () { var o = !nav.classList.contains("is-open"); nav.classList.toggle("is-open", o); burger.setAttribute("aria-expanded", String(o)); if (o) $("a", nav).focus(); });
+  nav.addEventListener("click", function (e) { if (e.target.closest("a")) closeMenu(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("is-open")) { closeMenu(); burger.focus(); } });
+
+  /* карусель отзывов: своя, без автопрокрутки; кнопки, точки, стрелки клавиатуры, свайп (scroll-snap) */
+  (function () {
+    var track = $("#revTrack"), slides = $$(".review", track), dots = $("#revDots"), idx = 0;
+    dots.innerHTML = slides.map(function (_, i) { return '<button type="button" aria-label="Отзыв ' + (i + 1) + ' из ' + slides.length + '"></button>'; }).join("");
+    var db = $$("button", dots);
+    function perView() { return Math.max(1, Math.round(track.clientWidth / slides[0].getBoundingClientRect().width)); }
+    function go(i) {
+      var max = slides.length - perView(); idx = Math.max(0, Math.min(i, max));
+      track.scrollTo({ left: slides[idx].offsetLeft - track.offsetLeft, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      mark();
+    }
+    function mark() {
+      db.forEach(function (b, i) { b.setAttribute("aria-current", String(i === idx)); });
+      $("#revPrev").disabled = idx <= 0; $("#revNext").disabled = idx >= slides.length - perView();
+      if (document.activeElement && document.activeElement.disabled) $("#revCarousel").focus({ preventScroll: true });
+    }
+    var t; track.addEventListener("scroll", function () { clearTimeout(t); t = setTimeout(function () {
+      var x = track.scrollLeft, best = 0; slides.forEach(function (s, i) { if (Math.abs(s.offsetLeft - track.offsetLeft - x) < Math.abs(slides[best].offsetLeft - track.offsetLeft - x)) best = i; }); idx = best; mark(); }, 80); });
+    $("#revPrev").addEventListener("click", function () { go(idx - 1); });
+    $("#revNext").addEventListener("click", function () { go(idx + 1); });
+    db.forEach(function (b, i) { b.addEventListener("click", function () { go(i); }); });
+    $("#revCarousel").addEventListener("keydown", function (e) {
+      if (e.target.closest(".dots") || e.target === $("#revCarousel") || e.target.closest(".cbtn")) {
+        if (e.key === "ArrowRight") { e.preventDefault(); go(idx + 1); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); go(idx - 1); }
+      }
+    });
+    window.addEventListener("resize", function () { go(idx); });
+    mark();
+    window.SpaCarousel = { go: go, idx: function () { return idx; } };
+  })();
+
+  /* видеоотзывы — заглушки */
+  $$("[data-video]").forEach(function (b) { b.addEventListener("click", function () { $("#videoNote").textContent = "Видеоотзывы появятся после съёмки (демо)."; }); });
+
+  /* прямой переход по #booking открывает запись */
+  if (location.hash === "#booking") setTimeout(function () { openBooking(); }, 0);
 
   /* init */
   applySettings();

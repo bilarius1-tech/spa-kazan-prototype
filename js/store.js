@@ -1,10 +1,10 @@
 /* Общий демо-слой данных для сайта и админки. Всё хранится в localStorage этого браузера.
    Ключи: spaKazanDemoHolds (заявки), spaKazanDemoConfig (цены/расписание поверх js/config.js),
-   spaKazanDemoData (специалистки и услуги), spaKazanDemoSettings (контакты, тексты), spaKazanDemoBlocks (ручные блокировки). */
+   spaKazanDemoData (специалистки и услуги), spaKazanDemoSettings (контакты, тексты), spaKazanDemoBlocks (ручные блокировки), spaKazanDemoLeads (обратные звонки и сертификаты). */
 window.SpaStore = (function () {
   "use strict";
-  var K = { holds: "spaKazanDemoHolds", cfg: "spaKazanDemoConfig", data: "spaKazanDemoData", settings: "spaKazanDemoSettings", blocks: "spaKazanDemoBlocks", ver: "spaKazanDemoVersion" };
-  var VER = "2";
+  var K = { holds: "spaKazanDemoHolds", cfg: "spaKazanDemoConfig", data: "spaKazanDemoData", settings: "spaKazanDemoSettings", blocks: "spaKazanDemoBlocks", leads: "spaKazanDemoLeads", ver: "spaKazanDemoVersion" };
+  var VER = "3";
   var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
   var BASE_CFG = clone(window.SPA_CONFIG), BASE_DATA = clone(window.SPA_DATA);
   var DEFAULT_SETTINGS = {
@@ -41,30 +41,71 @@ window.SpaStore = (function () {
   function activeServices() { return window.SPA_DATA.services.filter(function (s) { return s.active !== false; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); }); }
   function priceFor(spec, sid) { var s = svcById(sid); return (spec && spec.priceOverride && spec.priceOverride[sid]) || (s ? s.price : 0); }
 
-  /* ---- цена: P = S + max(T + max(0, D − D0) × R, Tmin); D > Dmax — ручной расчёт ---- */
+  /* ---- цена ----
+     mode "zones" (по умолчанию): выезд = цена зоны по км от базы салона (ул. Яники, 17б); дальше последней зоны — вручную.
+     mode "formula": P = S + max(T + max(0, D − D0) × R, Tmin) от точки специалистки; D > Dmax — вручную.
+     opts.couch — аренда кушетки (калькулятор мастера). */
   function haversine(a, b) {
     var R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
     var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     return 2 * R * Math.asin(Math.sqrt(x));
   }
-  function calcPrice(spec, svcIds, place, pricing) {
-    var P = pricing || window.SPA_CONFIG.pricing, S = 0, dur = 0;
+  function zonesOf(P) { return (P.zones || []).slice().sort(function (a, b) { return a.upTo - b.upTo; }); }
+  function zoneFor(D, P) {
+    var z = zonesOf(P), from = 0;
+    for (var i = 0; i < z.length; i++) { if (D <= z[i].upTo) return { idx: i, from: from, upTo: z[i].upTo, price: +z[i].price }; from = z[i].upTo; }
+    return null;
+  }
+  function maxZone(P) { var z = zonesOf(P); return z.length ? z[z.length - 1].upTo : 0; }
+  function calcPrice(spec, svcIds, place, pricing, opts) {
+    var P = pricing || window.SPA_CONFIG.pricing, S = 0, dur = 0, mode = P.mode === "formula" ? "formula" : "zones";
     (svcIds || []).forEach(function (id) { var s = svcById(id); if (!s) return; S += priceFor(spec, id); dur += +s.duration; });
-    var res = { S: S, dur: dur, D: null, travel: null, extraKm: 0, extraCost: 0, out: false, minApplied: false, P: null, T: P.T, R: P.R, D0: P.D0, Tmin: P.Tmin };
-    if (spec && place) {
-      var D = Math.round(haversine(spec.base, place) * P.roadFactor * 10) / 10;
+    var couch = opts && opts.couch ? +P.couchPrice || 0 : 0;
+    var res = { mode: mode, S: S, dur: dur, D: null, travel: null, extraKm: 0, extraCost: 0, out: false, minApplied: false, P: null, T: P.T, R: P.R, D0: P.D0, Tmin: P.Tmin, zone: null, couch: couch,
+      origin: mode === "zones" ? (P.base && P.base.label) : (spec && spec.base && spec.base.label) };
+    var origin = mode === "zones" ? P.base : spec && spec.base;
+    if (origin && place) {
+      var D = Math.round(haversine(origin, place) * P.roadFactor * 10) / 10;
       res.D = D;
-      if (D > P.Dmax) res.out = true;
+      if (mode === "zones") {
+        var z = zoneFor(D, P);
+        if (!z) res.out = true; else { res.zone = z; res.travel = z.price; }
+      } else if (D > P.Dmax) res.out = true;
       else {
         res.extraKm = Math.round(Math.max(0, D - P.D0) * 10) / 10;
         res.extraCost = res.extraKm * P.R;
         var raw = P.T + res.extraCost, step = P.roundTo || 1, rounded = Math.ceil(raw / step) * step;
         res.travel = Math.max(rounded, P.Tmin);
         res.minApplied = P.Tmin > rounded;
-        res.P = S + res.travel;
       }
+      if (!res.out) res.P = S + res.travel + couch;
     }
     return res;
+  }
+  function zoneLabel(z) { return z ? (z.from ? z.from + "–" + z.upTo : "до " + z.upTo) + " км" : ""; }
+  function maxKm(P) { P = P || window.SPA_CONFIG.pricing; return P.mode === "formula" ? P.Dmax : maxZone(P); }
+
+  /* ---- обратные звонки и сертификаты (лид-формы сайта) ---- */
+  function leads() { return get(K.leads, []); }
+  function saveLeads(l) { set(K.leads, l); }
+  function addLead(o) {
+    var now = Date.now(), l = leads();
+    var x = Object.assign({ id: "L-" + (now + Math.floor(Math.random() * 1000)).toString(36).toUpperCase().slice(-5), created: now, status: "new", type: "callback" }, o);
+    l.push(x); saveLeads(l); return x;
+  }
+
+  /* Демо-QR: узор с «глазками» как у QR, псевдослучайный от строки. Не является настоящим QR-кодом. */
+  function drawQR(cv, text) {
+    var n = 33, ctx = cv.getContext("2d"), h = 2166136261;
+    for (var i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+    var rnd = function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return (h >>> 0) / 4294967296; };
+    ctx.fillStyle = "#F4EBDA"; ctx.fillRect(0, 0, n, n); ctx.fillStyle = "#352A20";
+    var finder = function (x, y) { ctx.fillRect(x, y, 7, 7); ctx.fillStyle = "#F4EBDA"; ctx.fillRect(x + 1, y + 1, 5, 5); ctx.fillStyle = "#352A20"; ctx.fillRect(x + 2, y + 2, 3, 3); };
+    for (var y = 2; y < n - 2; y++) for (var x = 2; x < n - 2; x++) {
+      var inF = (x < 10 && y < 10) || (x > n - 11 && y < 10) || (x < 10 && y > n - 11);
+      if (!inF && rnd() > 0.52) ctx.fillRect(x, y, 1, 1);
+    }
+    finder(2, 2); finder(n - 9, 2); finder(2, n - 9);
   }
 
   /* ---- заявки ---- */
@@ -130,19 +171,24 @@ window.SpaStore = (function () {
       { id: "B1", spec: "s3", day: dayKey(addDays(t, 1)), s: toMin("13:00"), e: toMin("14:00"), reason: "Перерыв" },
       { id: "B2", spec: "s4", day: dayKey(addDays(t, 3)), s: toMin("09:00"), e: toMin("21:00"), reason: "Выходной" }
     ]);
+    saveLeads([
+      { id: "L-EX01", type: "callback", phone: "+7 (000) 000-00-21", created: now - 35 * 60000, status: "new", source: "Форма «Получить расчёт»" },
+      { id: "L-EX02", type: "certificate", phone: "+7 (000) 000-00-22", name: "Пример: Гульнара", amount: 5000, created: now - 3 * 3600000, status: "done", source: "Купить сертификат" }
+    ]);
     set(K.ver, VER);
   }
   function resetDemo() {
     Object.keys(K).forEach(function (k) { try { localStorage.removeItem(K[k]); } catch (e) {} });
     seed();
   }
-  if (get(K.ver, null) !== VER) seed(); else applyAll();
+  if (get(K.ver, null) !== VER) resetDemo(); else applyAll(); /* новая версия демо — данные пересоздаются */
 
   return {
     K: K, get: get, set: set, toMin: toMin, fmt: fmt, dayKey: dayKey, keyToDate: keyToDate, addDays: addDays, today: today,
     applyAll: applyAll, saveConfig: saveConfig, saveData: saveData, settings: settings, saveSettings: saveSettings,
     specById: specById, svcById: svcById, activeSpecs: activeSpecs, activeServices: activeServices, priceFor: priceFor,
-    calcPrice: calcPrice, requests: requests, saveRequests: saveRequests, updateRequest: updateRequest, effStatus: effStatus, isBusy: isBusy,
+    calcPrice: calcPrice, zoneFor: zoneFor, zoneLabel: zoneLabel, zonesOf: zonesOf, maxKm: maxKm, haversine: haversine,
+    leads: leads, saveLeads: saveLeads, addLead: addLead, drawQR: drawQR, requests: requests, saveRequests: saveRequests, updateRequest: updateRequest, effStatus: effStatus, isBusy: isBusy,
     finalTotal: finalTotal, blocks: blocks, saveBlocks: saveBlocks, busy: busy, makeRequest: makeRequest, resetDemo: resetDemo,
     baseConfig: function () { return clone(BASE_CFG); }
   };

@@ -32,7 +32,10 @@
   function chip(r) { var st = S.effStatus(r); return '<span class="chip st-' + st + '">' + SHORT[st] + "</span>" + (st === "hold" ? '<span class="timer" data-expires="' + r.expires + '"></span>' : ""); }
   function left(ms) { if (ms <= 0) return "истекла"; var m = Math.floor(ms / 60000), s = Math.floor(ms % 60000 / 1000); return "осталось " + m + ":" + (s < 10 ? "0" : "") + s; }
   function tick() { $$("[data-expires]").forEach(function (el) { var ms = +el.getAttribute("data-expires") - Date.now(); el.textContent = left(ms); if (ms <= 0 && !el.dataset.done) { el.dataset.done = 1; render(); } }); updateCount(); }
-  function updateCount() { var n = S.requests().filter(function (r) { return S.effStatus(r) === "hold"; }).length; $("#holdCount").textContent = n || ""; }
+  function updateCount() {
+    var n = S.requests().filter(function (r) { return S.effStatus(r) === "hold"; }).length; $("#holdCount").textContent = n || "";
+    var l = S.leads().filter(function (x) { return x.status === "new"; }).length; $("#leadCount").textContent = l || "";
+  }
   function svcTitle(id) { var s = S.svcById(id); return s ? s.title : id; }
   function addHistory(r, t) { (r.history = r.history || []).push({ at: Date.now(), text: t }); }
   function dt(ms) { return new Date(ms).toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
@@ -69,7 +72,7 @@
     S.applyAll(); D = window.SPA_DATA;
     var r = route(), nav = r.page === "request" ? "requests" : r.page === "specialist" ? "specialists" : r.page;
     $$("[data-nav]").forEach(function (a) { if (a.getAttribute("data-nav") === nav) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-    var fn = { requests: pRequests, request: pRequest, calendar: pCalendar, specialists: pSpecialists, specialist: pSpecialist, services: pServices, pricing: pPricing, settings: pSettings }[r.page] || pRequests;
+    var fn = { requests: pRequests, request: pRequest, leads: pLeads, calendar: pCalendar, specialists: pSpecialists, specialist: pSpecialist, services: pServices, pricing: pPricing, settings: pSettings }[r.page] || pRequests;
     var y = window.scrollY; fn(r.id); updateCount(); tick();
     if (render.lastPage === location.hash) window.scrollTo(0, y); else { window.scrollTo(0, 0); }
     render.lastPage = location.hash;
@@ -125,7 +128,8 @@
     var conf = (st === "hold" || st === "confirmed") ? conflicts(r) : [];
     var calcRows =
       '<tr><td>S — услуги<div class="sub">' + r.svcs.map(function (id) { return esc(svcTitle(id)) + " · " + rub(S.priceFor(sp, id)); }).join("<br>") + "</div></td><td>" + rub(c.S) + "</td></tr>" +
-      (c.out ? '<tr><td>Выезд<div class="sub">' + km(c.D) + " — вне зоны (макс. " + window.SPA_CONFIG.pricing.Dmax + " км), рассчитать вручную через корректировку</div></td><td>—</td></tr>" :
+      (c.out ? '<tr><td>Выезд<div class="sub">' + km(c.D) + " — вне зоны (макс. " + S.maxKm() + " км), рассчитать вручную через корректировку</div></td><td>—</td></tr>" :
+      c.mode === "zones" ? '<tr><td>Выезд по зоне<div class="sub">' + km(c.D) + " от базы (" + esc(c.origin || "") + "), зона " + S.zoneLabel(c.zone) + "</div></td><td>" + rub(c.travel) + "</td></tr>" :
       '<tr><td>T — базовый выезд<div class="sub">включает ' + c.D0 + " км</div></td><td>" + rub(c.T) + "</td></tr>" +
       '<tr><td>Доплата за км<div class="sub">max(0, ' + km(c.D) + " − " + c.D0 + " км) = " + km(c.extraKm) + " × " + rub(c.R) + "</div></td><td>" + rub(c.extraCost) + "</td></tr>" +
       '<tr><td>Выезд итого<div class="sub">' + (c.minApplied ? "применена минимальная стоимость " + rub(c.Tmin) : "округление вверх до 10 ₽") + "</div></td><td>" + rub(c.travel) + "</td></tr>") +
@@ -146,10 +150,10 @@
           (conf.length ? '<p class="warn">Пересечение с другим занятым временем у специалистки: ' + conf.map(function (b) { return fmt(b.s) + "–" + fmt(b.e); }).join(", ") + ". Проверьте перед подтверждением.</p>" : "") + "</section>" +
         '<section class="panel"><h2>Клиент и адрес</h2><dl class="kv"><dt>Имя</dt><dd>' + esc(r.name) + '</dd><dt>Телефон</dt><dd><a href="tel:' + esc(String(r.phone).replace(/[^\d+]/g, "")) + '">' + esc(r.phone) + "</a></dd>" +
           "<dt>Адрес</dt><dd>" + esc(r.place ? r.place.name : "—") + (r.house ? ", д. " + esc(r.house) : "") + (r.flat ? ", кв. " + esc(r.flat) : "") + (r.entr ? ", " + esc(r.entr) : "") + '<br><span class="small muted">' + esc(r.place ? r.place.area : "") + "</span></dd>" +
-          "<dt>Расстояние</dt><dd>" + (c.D != null ? "≈ " + km(c.D) + " по дороге (оценка)" : "—") + "</dd><dt>Комментарий</dt><dd>" + (r.comment ? esc(r.comment) : '<span class="muted">—</span>') + "</dd></dl></section>" +
+          "<dt>Расстояние</dt><dd>" + (c.D != null ? "≈ " + km(c.D) + " по дороге от " + (c.mode === "zones" ? "базы" : "точки мастера") + " (оценка)" : "—") + "</dd><dt>Комментарий</dt><dd>" + (r.comment ? esc(r.comment) : '<span class="muted">—</span>') + "</dd></dl></section>" +
         '<section class="panel"><h2>История</h2><ul class="history">' + (r.history || []).map(function (h) { return "<li><time>" + dt(h.at) + "</time>" + esc(h.text) + "</li>"; }).join("") + "</ul></section>" +
       "</div><div>" +
-        '<section class="panel"><h2>Расчёт цены</h2><p class="small muted" style="margin:0 0 8px">P = S + max(T + max(0, D − D₀) × R, T<sub>min</sub>) + доп. услуги ± корректировка. Тарифы — на момент заявки.</p><table class="calc">' + calcRows + "</table>" +
+        '<section class="panel"><h2>Расчёт цены</h2><p class="small muted" style="margin:0 0 8px">' + (c.mode === "zones" ? "Итог = услуги + выезд по зоне" : "P = S + max(T + max(0, D − D₀) × R, T<sub>min</sub>)") + ' + доп. услуги ± корректировка. Тарифы — на момент заявки.</p><table class="calc">' + calcRows + "</table>" +
           '<div class="actions">' + A.map(function (a) { return '<button class="btn btn--sm ' + (a[2] === "gold" ? "btn--gold" : a[2] === "danger" ? "btn--danger" : "") + '" type="button" data-act="' + a[0] + '">' + a[1] + "</button>"; }).join("") + "</div>" +
           (st === "done" || st === "paid" ? '<p class="small muted" style="margin-top:10px">Все специалистки — самозанятые: оплата по QR идёт напрямую на счёт специалистки, чек в «Мой налог» пробивает она. Салон деньги не принимает.</p>' : "") +
         "</section>" +
@@ -198,19 +202,7 @@
       });
     }
   }
-  /* Демо-QR: узор с «глазками» как у QR, псевдослучайный от строки. Не является настоящим QR-кодом. */
-  function drawQR(cv, text) {
-    var n = 33, ctx = cv.getContext("2d"), h = 2166136261;
-    for (var i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
-    var rnd = function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return (h >>> 0) / 4294967296; };
-    ctx.fillStyle = "#F4EBDA"; ctx.fillRect(0, 0, n, n); ctx.fillStyle = "#352A20";
-    var finder = function (x, y) { ctx.fillRect(x, y, 7, 7); ctx.fillStyle = "#F4EBDA"; ctx.fillRect(x + 1, y + 1, 5, 5); ctx.fillStyle = "#352A20"; ctx.fillRect(x + 2, y + 2, 3, 3); };
-    for (var y = 2; y < n - 2; y++) for (var x = 2; x < n - 2; x++) {
-      var inF = (x < 10 && y < 10) || (x > n - 11 && y < 10) || (x < 10 && y > n - 11);
-      if (!inF && rnd() > 0.52) ctx.fillRect(x, y, 1, 1);
-    }
-    finder(2, 2); finder(n - 9, 2); finder(2, n - 9);
-  }
+  var drawQR = S.drawQR; /* общий демо-QR из js/store.js */
 
   /* ---------- 2. Календарь ---------- */
   function pCalendar() {
@@ -340,10 +332,11 @@
   function pServices() {
     var list = D.services.slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
     $("#main").innerHTML = '<div class="page-head"><div><h1>Услуги</h1><p>Порядок — как на сайте. Неактивные услуги скрыты в прайсе и в форме.</p></div><button class="btn btn--sm" type="button" id="addSvc">Добавить услугу</button></div>' +
-      '<form id="svcForm"><table class="table svc-table"><thead><tr><th>Порядок</th><th>Название и описание</th><th>Длительность, мин</th><th>Цена, ₽</th><th>Активна</th></tr></thead><tbody>' +
+      '<form id="svcForm"><table class="table svc-table"><thead><tr><th>Порядок</th><th>Название и описание</th><th>Раздел</th><th>Длительность, мин</th><th>Цена, ₽</th><th>Активна</th></tr></thead><tbody>' +
       list.map(function (s, i) {
         return '<tr data-id="' + esc(s.id) + '"><td data-l="Порядок"><div class="ord"><button type="button" data-up="' + i + '" aria-label="Выше: ' + esc(s.title) + '"' + (i === 0 ? " disabled" : "") + '>↑</button><button type="button" data-down="' + i + '" aria-label="Ниже: ' + esc(s.title) + '"' + (i === list.length - 1 ? " disabled" : "") + ">↓</button></div></td>" +
           '<td data-l="Название"><input type="text" name="title" value="' + esc(s.title) + '" aria-label="Название" required><input type="text" name="text" value="' + esc(s.text) + '" aria-label="Описание" style="margin-top:6px"></td>' +
+          '<td data-l="Раздел"><select name="cat" aria-label="Раздел прайса">' + [["massage", "Массаж"], ["spa", "SPA"], ["duo", "Для двоих"]].map(function (o) { return '<option value="' + o[0] + '"' + ((s.cat || "massage") === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select></td>" +
           '<td data-l="Длительность"><input type="number" name="duration" min="10" step="5" value="' + s.duration + '" aria-label="Длительность, мин"></td>' +
           '<td data-l="Цена"><input type="number" name="price" min="0" step="50" value="' + s.price + '" aria-label="Цена, ₽"></td>' +
           '<td data-l="Активна"><label class="check"><input type="checkbox" name="active"' + (s.active !== false ? " checked" : "") + "> да</label></td></tr>";
@@ -351,7 +344,7 @@
     var collect = function () {
       return $$("#svcForm tbody tr").map(function (tr, i) {
         var old = list.filter(function (x) { return x.id === tr.getAttribute("data-id"); })[0];
-        return Object.assign({}, old, { order: i + 1, title: $('[name=title]', tr).value.trim() || old.title, text: $('[name=text]', tr).value.trim(), duration: +$('[name=duration]', tr).value || old.duration, price: +$('[name=price]', tr).value || 0, active: $('[name=active]', tr).checked });
+        return Object.assign({}, old, { order: i + 1, title: $('[name=title]', tr).value.trim() || old.title, text: $('[name=text]', tr).value.trim(), cat: $('[name=cat]', tr).value, duration: +$('[name=duration]', tr).value || old.duration, price: +$('[name=price]', tr).value || 0, active: $('[name=active]', tr).checked });
       });
     };
     var move = function (i, d) { var c = collect(), t = c[i]; c[i] = c[i + d]; c[i + d] = t; c.forEach(function (x, k) { x.order = k + 1; }); S.saveData(D.specialists, c); render(); };
@@ -359,7 +352,7 @@
     $$("[data-down]").forEach(function (b) { b.addEventListener("click", function () { move(+b.getAttribute("data-down"), 1); }); });
     $("#svcForm").addEventListener("submit", function (e) { e.preventDefault(); S.saveData(D.specialists, collect()); toast("Услуги сохранены"); render(); });
     $("#addSvc").addEventListener("click", function () {
-      var c = collect(); c.push({ id: "x" + Date.now().toString(36), order: c.length + 1, active: false, title: "Новая услуга", duration: 30, price: 1000, text: "" });
+      var c = collect(); c.push({ id: "x" + Date.now().toString(36), order: c.length + 1, active: false, cat: "massage", title: "Новая услуга", duration: 30, price: 1000, text: "" });
       S.saveData(D.specialists, c); toast("Добавлена неактивная услуга — заполните и включите"); render();
       var ins = $$('#svcForm tbody tr:last-child input[name=title]')[0]; if (ins) { ins.focus(); ins.select(); }
     });
@@ -372,33 +365,68 @@
   ];
   var SF = [["travelBufferMin", "Буфер на дорогу после сеанса, мин", 5], ["holdMinutes", "Временная бронь (HOLD), мин", 5], ["stepMin", "Шаг слотов, мин", 5]];
   function pPricing() {
-    var C = window.SPA_CONFIG, specs = S.activeSpecs();
+    var C = window.SPA_CONFIG, P = C.pricing, specs = S.activeSpecs(), zones = S.zonesOf(P);
     var num = function (f, v) { return '<div class="field"><label for="p-' + f[0] + '">' + f[1] + '</label><input id="p-' + f[0] + '" data-k="' + f[0] + '" type="number" step="' + f[2] + '" min="0" value="' + v + '"></div>'; };
-    $("#main").innerHTML = '<div class="page-head"><div><h1>Выезд и цены</h1><p>P = S + max(T + max(0, D − D₀) × R, T<sub>min</sub>). D — оценка км по дороге от базовой точки специалистки. Сохранение сразу меняет расчёт в форме на сайте.</p></div></div>' +
-      '<div class="grid2"><form class="panel" id="prForm"><h2>Тарифы выезда</h2><div class="form">' + PF.map(function (f) { return num(f, C.pricing[f[0]]); }).join("") + "</div>" +
-      '<h2 style="margin-top:18px">Расписание</h2><div class="form">' + SF.map(function (f) { return num(f, C.schedule[f[0]]); }).join("") +
-      '<div class="field"><label for="p-dayStart">Начало дня (если у специалистки не задано)</label><input id="p-dayStart" type="time" step="1800" value="' + C.schedule.dayStart + '"></div><div class="field"><label for="p-dayEnd">Конец дня (если у специалистки не задано)</label><input id="p-dayEnd" type="time" step="1800" value="' + C.schedule.dayEnd + '"></div></div>' +
+    var zoneRow = function (z, i) { return '<tr><td data-l="Зона">' + (i + 1) + '</td><td data-l="До, км"><input type="number" name="zUp" min="1" step="1" value="' + z.upTo + '" aria-label="Зона ' + (i + 1) + ': до, км"></td><td data-l="Цена, ₽"><input type="number" name="zPrice" min="0" step="50" value="' + z.price + '" aria-label="Зона ' + (i + 1) + ': цена, ₽"></td><td><button type="button" class="btn btn--sm btn--danger" data-zdel="' + i + '" aria-label="Удалить зону ' + (i + 1) + '">×</button></td></tr>'; };
+    $("#main").innerHTML = '<div class="page-head"><div><h1>Выезд и цены</h1><p>Сайт, калькулятор мастера и админка считают одинаково. Сохранение сразу меняет расчёт в форме на сайте. Значения — демо.</p></div></div>' +
+      '<div class="grid2"><form class="panel" id="prForm"><h2>Способ расчёта выезда</h2>' +
+      '<div class="modes" role="radiogroup" aria-label="Способ расчёта"><label class="check"><input type="radio" name="mode" value="zones"' + (P.mode !== "formula" ? " checked" : "") + '> По зонам от базы</label> <label class="check"><input type="radio" name="mode" value="formula"' + (P.mode === "formula" ? " checked" : "") + '> Старая формула (от точки мастера)</label></div>' +
+      '<fieldset class="zfs" id="zonesBox"><legend><h2 style="margin:0">Зоны выезда</h2></legend><p class="small muted" style="margin:0 0 8px">Км по дороге (оценка) от базы. Дальше последней зоны — расчёт вручную.</p>' +
+        '<div class="form"><div class="field"><label for="p-baseLabel">База (адрес)</label><input id="p-baseLabel" type="text" value="' + esc(P.base.label) + '"></div><div class="field"><label for="p-baseLat">Широта</label><input id="p-baseLat" type="number" step="0.0001" value="' + P.base.lat + '"></div><div class="field"><label for="p-baseLon">Долгота</label><input id="p-baseLon" type="number" step="0.0001" value="' + P.base.lon + '"></div></div>' +
+        '<p class="small muted" style="margin:4px 0 8px">Координаты базы приблизительные (демо) — уточнить.</p>' +
+        '<table class="table ztable"><thead><tr><th>Зона</th><th>До, км</th><th>Цена, ₽</th><th></th></tr></thead><tbody id="zBody">' + zones.map(zoneRow).join("") + '</tbody></table>' +
+        '<button type="button" class="btn btn--sm" id="zAdd" style="margin-top:8px">Добавить зону</button></fieldset>' +
+      '<h2 style="margin-top:18px">Калькулятор мастера</h2><div class="form">' + num(["couchPrice", "Аренда кушетки, ₽", 50], P.couchPrice || 0) + "</div>" +
+      '<fieldset class="zfs" id="formulaBox"><legend><h2 style="margin:0">Старая формула</h2></legend><p class="small muted" style="margin:0 0 8px">P = S + max(T + max(0, D − D₀) × R, T<sub>min</sub>), D — от базовой точки мастера.</p><div class="form">' + PF.filter(function (f) { return f[0] !== "roadFactor"; }).map(function (f) { return num(f, P[f[0]]); }).join("") + "</div></fieldset>" +
+      '<h2 style="margin-top:18px">Общее</h2><div class="form">' + num(PF.filter(function (f) { return f[0] === "roadFactor"; })[0], P.roadFactor) + SF.map(function (f) { return num(f, C.schedule[f[0]]); }).join("") +
+      '<div class="field"><label for="p-dayStart">Начало дня (если у мастера не задано)</label><input id="p-dayStart" type="time" step="1800" value="' + C.schedule.dayStart + '"></div><div class="field"><label for="p-dayEnd">Конец дня (если у мастера не задано)</label><input id="p-dayEnd" type="time" step="1800" value="' + C.schedule.dayEnd + '"></div></div>' +
       '<div class="actions"><button class="btn btn--gold" type="submit">Сохранить</button><button class="btn btn--line" type="button" id="prReset">Вернуть значения по умолчанию</button></div></form>' +
-      '<section class="panel"><h2>Превью расчёта</h2><div class="form"><div class="field"><label for="pvSpec">Специалистка</label><select id="pvSpec">' + specs.map(function (s) { return '<option value="' + s.id + '">' + esc(s.name) + " · " + esc(s.base.label) + "</option>"; }).join("") + "</select></div>" +
+      '<section class="panel"><h2>Превью расчёта</h2><div class="form"><div class="field"><label for="pvSpec">Мастер</label><select id="pvSpec">' + specs.map(function (s) { return '<option value="' + s.id + '"' + (s.id === "s2" ? " selected" : "") + ">" + esc(s.name) + " · " + esc(s.base.label) + "</option>"; }).join("") + "</select></div>" +
       '<div class="field"><label for="pvAddr">Тестовый адрес</label><select id="pvAddr">' + window.SPA_DATA.places.map(function (p, i) { return '<option value="' + i + '"' + (p.name === "пр. Победы" ? " selected" : "") + ">" + esc(p.name) + " — " + esc(p.area) + "</option>"; }).join("") + '</select></div></div>' +
-      '<fieldset style="border:0;padding:0;margin:10px 0"><legend class="lbl small" style="font-weight:600">Услуги</legend><div class="checks">' + S.activeServices().map(function (s, i) { return '<label class="check"><input type="checkbox" name="pvs" value="' + s.id + '"' + (i === 3 ? " checked" : "") + "> " + esc(s.title) + "</label>"; }).join("") + "</div></fieldset>" +
+      '<fieldset style="border:0;padding:0;margin:10px 0"><legend class="lbl small" style="font-weight:600">Услуги</legend><div class="checks">' + S.activeServices().map(function (s) { return '<label class="check"><input type="checkbox" name="pvs" value="' + s.id + '"' + (s.id === "back" || s.id === "head" ? " checked" : "") + "> " + esc(s.title) + "</label>"; }).join("") + '</div><label class="check" style="margin-top:6px"><input type="checkbox" id="pvCouch"> Аренда кушетки (калькулятор мастера)</label></fieldset>' +
       '<div class="preview" id="pvOut" aria-live="polite"></div><p class="small muted">Превью считает по значениям в форме слева, даже несохранённым.</p></section></div>';
     var formVals = function () {
-      var p = Object.assign({}, C.pricing), s = Object.assign({}, C.schedule);
-      $$("#prForm [data-k]").forEach(function (i) { var k = i.getAttribute("data-k"), v = +i.value; if (k in C.pricing) p[k] = v; else s[k] = v; });
+      var p = Object.assign({}, P), s = Object.assign({}, C.schedule);
+      $$("#prForm [data-k]").forEach(function (i) { var k = i.getAttribute("data-k"), v = +i.value; if (k in C.schedule) s[k] = v; else p[k] = v; });
+      p.mode = ($("#prForm input[name=mode]:checked") || {}).value || "zones";
+      p.base = { label: $("#p-baseLabel").value.trim() || P.base.label, lat: +$("#p-baseLat").value || P.base.lat, lon: +$("#p-baseLon").value || P.base.lon };
+      p.zones = $$("#zBody tr").map(function (tr) { return { upTo: +$("[name=zUp]", tr).value || 0, price: +$("[name=zPrice]", tr).value || 0 }; }).filter(function (z) { return z.upTo > 0; }).sort(function (a, b) { return a.upTo - b.upTo; });
       s.dayStart = $("#p-dayStart").value; s.dayEnd = $("#p-dayEnd").value; return { p: p, s: s };
     };
+    var modeUI = function () { var z = ($("#prForm input[name=mode]:checked") || {}).value !== "formula"; $("#zonesBox").disabled = !z; $("#formulaBox").disabled = z; $("#zonesBox").classList.toggle("is-off", !z); $("#formulaBox").classList.toggle("is-off", z); };
     var preview = function () {
+      modeUI();
       var v = formVals(), sp = S.specById($("#pvSpec").value), pl = window.SPA_DATA.places[+$("#pvAddr").value], ids = $$("input[name=pvs]:checked").map(function (i) { return i.value; });
-      var r = S.calcPrice(sp, ids, pl, v.p);
-      $("#pvOut").innerHTML = '<table class="calc"><tr><td>S — услуги</td><td>' + rub(r.S) + "</td></tr><tr><td>D — расстояние</td><td>≈ " + km(r.D) + "</td></tr>" +
-        (r.out ? '<tr><td colspan="2">Вне зоны обслуживания (&gt; ' + v.p.Dmax + " км): заявка уйдёт с пометкой «ручной расчёт»</td></tr>" :
-        "<tr><td>T — базовый выезд</td><td>" + rub(v.p.T) + "</td></tr><tr><td>Доплата: " + km(r.extraKm) + " × " + rub(v.p.R) + "</td><td>" + rub(r.extraCost) + "</td></tr><tr><td>Выезд" + (r.minApplied ? " (минимум)" : "") + "</td><td>" + rub(r.travel) + '</td></tr><tr class="total"><td>Итого</td><td>' + rub(r.P) + "</td></tr>") + "</table>";
+      var r = S.calcPrice(sp, ids, pl, v.p, { couch: $("#pvCouch").checked });
+      var travelRows = r.out ? '<tr><td colspan="2">Вне зоны обслуживания (&gt; ' + S.maxKm(v.p) + " км): заявка уйдёт с пометкой «ручной расчёт»</td></tr>" :
+        r.mode === "zones" ? "<tr><td>Выезд: зона " + S.zoneLabel(r.zone) + "</td><td>" + rub(r.travel) + "</td></tr>" :
+        "<tr><td>T — базовый выезд</td><td>" + rub(v.p.T) + "</td></tr><tr><td>Доплата: " + km(r.extraKm) + " × " + rub(v.p.R) + "</td><td>" + rub(r.extraCost) + "</td></tr><tr><td>Выезд" + (r.minApplied ? " (минимум)" : "") + "</td><td>" + rub(r.travel) + "</td></tr>";
+      $("#pvOut").innerHTML = '<table class="calc"><tr><td>S — услуги</td><td>' + rub(r.S) + "</td></tr><tr><td>D — от " + esc(r.origin || "") + "</td><td>≈ " + km(r.D) + "</td></tr>" + travelRows +
+        (r.couch ? "<tr><td>Аренда кушетки</td><td>" + rub(r.couch) + "</td></tr>" : "") + (r.out ? "" : '<tr class="total"><td>Итого</td><td>' + rub(r.P) + "</td></tr>") + "</table>";
     };
-    $$("#main input, #main select").forEach(function (i) { i.addEventListener("input", preview); i.addEventListener("change", preview); });
-    preview();
-    $("#prForm").addEventListener("submit", function (e) { e.preventDefault(); var v = formVals(); S.saveConfig(v.p, v.s); toast("Тарифы сохранены — форма на сайте считает по ним"); render(); });
+    var bind = function () { $$("#main input, #main select").forEach(function (i) { i.oninput = preview; i.onchange = preview; }); $$("[data-zdel]").forEach(function (b) { b.onclick = function () { b.closest("tr").remove(); renum(); preview(); }; }); };
+    var renum = function () { $$("#zBody tr").forEach(function (tr, i) { tr.firstChild.textContent = i + 1; }); };
+    $("#zAdd").addEventListener("click", function () { var last = $$("#zBody tr").pop(), up = last ? +$("[name=zUp]", last).value + 10 : 5; $("#zBody").insertAdjacentHTML("beforeend", zoneRow({ upTo: up, price: 2000 }, $$("#zBody tr").length)); bind(); preview(); });
+    bind(); preview();
+    $("#prForm").addEventListener("submit", function (e) { e.preventDefault(); var v = formVals(); if (!v.p.zones.length) { toast("Нужна хотя бы одна зона"); return; } S.saveConfig(v.p, v.s); toast("Тарифы сохранены — сайт и калькулятор считают по ним"); render(); });
     $("#prReset").addEventListener("click", function () { try { localStorage.removeItem(S.K.cfg); } catch (e) {} S.applyAll(); toast("Тарифы по умолчанию (js/config.js)"); render(); });
+  }
+
+  /* ---------- Звонки: обратный звонок и сертификаты с сайта ---------- */
+  function pLeads() {
+    var list = S.leads().sort(function (a, b) { return (a.status === "new" ? 0 : 1) - (b.status === "new" ? 0 : 1) || b.created - a.created; });
+    var T = { callback: "Обратный звонок", certificate: "Сертификат" };
+    $("#main").innerHTML = '<div class="page-head"><div><h1>Звонки</h1><p>Заявки «Получить расчёт» и «Купить сертификат» с сайта. Перезвоните и отметьте результат.</p></div></div>' +
+      (list.length ? '<table class="table"><thead><tr><th>№ и статус</th><th>Тип</th><th>Телефон</th><th>Детали</th><th>Создана</th><th></th></tr></thead><tbody>' + list.map(function (l) {
+        return '<tr data-lead="' + esc(l.id) + '"><td>' + esc(l.id) + '<br><span class="chip ' + (l.status === "new" ? "st-hold" : "st-done") + '">' + (l.status === "new" ? "Новая" : "Перезвонили") + "</span></td>" +
+          '<td data-l="Тип">' + (T[l.type] || esc(l.type)) + "</td>" +
+          '<td data-l="Телефон"><a href="tel:' + esc(String(l.phone).replace(/[^\d+]/g, "")) + '">' + esc(l.phone) + "</a></td>" +
+          '<td data-l="Детали">' + (l.type === "certificate" ? "Номинал " + rub(l.amount) + (l.name ? " · " + esc(l.name) : "") : esc(l.source || "Предварительный расчёт")) + "</td>" +
+          '<td data-l="Создана">' + dt(l.created) + "</td>" +
+          "<td>" + (l.status === "new" ? '<button class="btn btn--sm btn--gold" type="button" data-called="' + esc(l.id) + '">Перезвонили</button>' : "") + "</td></tr>";
+      }).join("") + "</tbody></table>" : '<p class="empty">Пока нет заявок на звонок.</p>');
+    $$("[data-called]").forEach(function (b) { b.addEventListener("click", function () {
+      var id = b.getAttribute("data-called"), l = S.leads(); l.forEach(function (x) { if (x.id === id) { x.status = "done"; x.doneAt = Date.now(); } }); S.saveLeads(l); toast("Отмечено"); render(); }); });
   }
 
   /* ---------- 6. Настройки ---------- */

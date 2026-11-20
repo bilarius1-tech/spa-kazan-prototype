@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лучший выездной спа в Казани — массаж на дому (прототип)</title>
-<meta name="description" content="Прототип сайта выездного спа в Казани: выбор специалистки, услуги, расчёт стоимости выезда и запись на удобное время.">
+<title>Премиальный SPA-салон у вас дома в Казани — выездной массаж (прототип)</title>
+<meta name="description" content="Прототип сайта выездного SPA в Казани: массаж и SPA-уходы на дому, расчёт стоимости выезда по зонам, выбор мастера и запись на удобное время.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#E9DDC6">
 <link rel="icon" href="data:,">
@@ -13,22 +13,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-960.webp" imagesrcset="images/hero-960.webp 960w, images/hero-1920.webp 1920w" imagesizes="100vw">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/v2.css">
 </head>
 <body>
-<a class="skip" href="#booking">Перейти к записи</a>
-<div class="demo-bar" role="note">Прототип: имена, цены, контакты и расписание — пример. Заявки никуда не отправляются.</div>
+<a class="skip" href="#services">Перейти к содержанию</a>
+<div class="demo-bar" role="note">Прототип: цены, контакты, мастера и акции — демо. Заявки сохраняются только в этом браузере.</div>
 
 <header class="header" id="top">
   <div class="container header__inner">
-    <a class="wordmark" href="#top" aria-label="Лучший выездной спа в Казани — на главную">Лучший выездной <span>спа</span></a>
-    <nav class="nav" aria-label="Основное меню">
-      <a href="#how">Как это работает</a>
-      <a href="#specialists">Специалистки</a>
-      <a href="#services">Услуги</a>
-      <a href="#faq">Вопросы</a>
-    </nav>
-    <a class="btn btn--gold btn--sm" href="#booking">Записаться</a>
+    <button class="burger" type="button" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Меню"><span aria-hidden="true"></span></button>
+    <a class="wordmark" href="#top" aria-label="Лучший выездной спа в Казани — наверх">Лучший выездной <span>спа</span></a>
+    <a class="hphone" href="tel:+70000000000" id="hPhone"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg><span class="hphone__num">+7 (000) 000-00-00</span><small>демо</small></a>
+    <div class="hsoc">
+      <a class="soc" href="#" data-stub aria-label="Написать в MAX (ссылка-заглушка)" title="MAX (демо)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 3.2c-4.9 0-8.8 3.5-8.8 7.9 0 2 .8 3.8 2.2 5.2l-.9 3.9 3.9-1.6c1.1.4 2.3.6 3.6.6 4.9 0 8.8-3.5 8.8-8.1S16.9 3.2 12 3.2z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 14V8.6l4 4 4-4V14"/></svg></a>
+      <a class="soc" href="#" data-stub aria-label="Написать в Telegram (ссылка-заглушка)" title="Telegram (демо)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M20.8 4 2.9 10.9c-.8.3-.8 1.4 0 1.7l4.4 1.5 1.7 5.3c.2.7 1.1.9 1.6.4l2.5-2.4 4.5 3.3c.6.4 1.4.1 1.6-.6L22 5.1c.2-.8-.5-1.4-1.2-1.1z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="m7.3 14.1 9.5-6.3-6.6 7.4"/></svg></a>
+    </div>
+    <button class="btn btn--line btn--sm hcert" type="button" data-cert>Купить сертификат</button>
+    <a class="btn btn--gold btn--sm hbook" href="#booking" data-book>Заказать<span class="hbook__more">&nbsp;выезд</span></a>
   </div>
+  <nav class="nav" id="nav" aria-label="Разделы">
+    <div class="container nav__inner">
+      <a href="#services">Услуги и цены</a><a href="#promos">Акции</a><a href="#how">Как мы работаем</a><a href="#specialists">Мастера</a><a href="#gallery">Атмосфера</a><a href="#reviews">Отзывы</a><a href="#founder">Об основателе</a><a href="#faq">Вопросы</a><a href="#lead">Расчёт по телефону</a><a href="#footer">Контакты</a>
+      <div class="nav__extra">
+        <button class="btn btn--line btn--sm" type="button" data-cert>Купить сертификат</button>
+        <span class="nav__soc"><a class="soc" href="#" data-stub aria-label="MAX (ссылка-заглушка)">MAX</a><a class="soc" href="#" data-stub aria-label="Telegram (ссылка-заглушка)">Telegram</a></span>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <main>
@@ -39,70 +50,237 @@
     </picture>
     <div class="hero__shade" aria-hidden="true"></div>
     <div class="container hero__content">
-      <p class="eyebrow eyebrow--light">Массаж и спа-уход на дому</p>
-      <h1 id="hero-title" class="display">Лучший выездной спа в&nbsp;Казани</h1>
-      <p class="hero__lead">Профессиональная массажистка приедет к вам со столом, маслами и полотенцами. Выберите специалистку и услуги — стоимость с выездом посчитаем сразу.</p>
+      <p class="eyebrow eyebrow--light">Выездной SPA · Казань</p>
+      <h1 id="hero-title" class="display">Премиальный SPA&#8209;салон у вас дома в&nbsp;Казани</h1>
+      <p class="hero__promo"><b>−15%</b> на первый выездной визит <small>демо-акция</small></p>
+      <p class="hero__lead">Мастер приедет с кушеткой, бельём и маслами. Стоимость с выездом посчитаем сразу — до записи.</p>
       <div class="hero__actions">
-        <a class="btn btn--gold btn--shine" href="#booking">Записаться</a>
-        <a class="btn btn--ghost-light" href="#specialists">Выбрать специалистку</a>
+        <a class="btn btn--gold btn--shine" href="#booking" data-book>Рассчитать стоимость</a>
+        <a class="btn btn--ghost-light" href="#specialists">Выбрать мастера</a>
       </div>
       <ul class="hero__facts">
         <li>Цена видна до отправки заявки</li>
-        <li>Оплата по СБП после сеанса</li>
-        <li>По всей Казани и пригородам</li>
+        <li>Оплата по QR после сеанса</li>
+        <li>Казань и пригороды</li>
       </ul>
+    </div>
+  </section>
+
+  <section class="section" id="services" aria-labelledby="svc-title">
+    <div class="container">
+      <div class="split-head">
+        <div>
+          <p class="eyebrow">Услуги и цены</p>
+          <h2 id="svc-title" class="h2">Массаж и SPA-уходы с выездом на дом</h2>
+        </div>
+        <div class="split-head__side">
+          <p>Выберите направление или откройте весь прайс. Выезд считается по зоне — от расстояния до вашего адреса. Цены — демо.</p>
+          <button class="btn btn--gold btn--shine btn--caps" type="button" data-price="all">Услуги и цены</button>
+        </div>
+      </div>
+      <div class="cats">
+        <button class="cat" type="button" data-price="massage"><img src="images/cat-massage.webp" alt="" width="600" height="750" loading="lazy" decoding="async"><span class="cat__txt"><span class="cat__t">Массаж</span><span class="cat__s" data-from="massage"></span></span></button>
+        <button class="cat" type="button" data-price="spa"><img src="images/cat-spa.webp" alt="" width="600" height="750" loading="lazy" decoding="async"><span class="cat__txt"><span class="cat__t">SPA</span><span class="cat__s" data-from="spa"></span></span></button>
+        <button class="cat" type="button" data-price="duo"><img src="images/cat-duo.webp" alt="" width="600" height="750" loading="lazy" decoding="async"><span class="cat__txt"><span class="cat__t">Для двоих</span><span class="cat__s" data-from="duo"></span></span></button>
+        <button class="cat" type="button" data-cert><img src="images/cat-cert.webp" alt="" width="600" height="750" loading="lazy" decoding="async"><span class="cat__txt"><span class="cat__t">Сертификат</span><span class="cat__s">в подарок, от 3 000 ₽</span></span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="promos" aria-labelledby="promo-title">
+    <div class="container">
+      <p class="eyebrow">Акции</p>
+      <h2 id="promo-title" class="h2">Специальные предложения</h2>
+      <p class="note">Условия акций — демо, уточняются при записи.</p>
+      <div class="promos">
+        <article class="promo"><p class="promo__big">4 + 1</p><h3>4 часа + 1 час в&nbsp;подарок</h3><p>Длинный SPA-день дома: закажите четыре часа процедур — пятый час за наш счёт.</p><a class="btn btn--line btn--sm" href="#booking" data-book>Записаться</a></article>
+        <article class="promo"><p class="promo__big">−20%</p><h3>Знакомство с новым мастером</h3><p>Первый визит к мастеру, у которого вы ещё не были, — со скидкой.</p><a class="btn btn--line btn--sm" href="#specialists">Выбрать мастера</a></article>
+        <article class="promo"><p class="promo__big">−20%</p><h3>SPA для двоих</h3><p>Два мастера одновременно — для пары, подруг или мамы с дочкой.</p><a class="btn btn--line btn--sm" href="#booking" data-book data-book-svc="duo">Записаться вдвоём</a></article>
+      </div>
     </div>
   </section>
 
   <section class="section" id="how" aria-labelledby="how-title">
     <div class="container">
-      <p class="eyebrow">Как это работает</p>
-      <h2 id="how-title" class="h2">Шесть шагов до спокойного вечера</h2>
-      <ol class="steps">
-        <li class="step"><span class="step__n">1</span><h3>Специалистка</h3><p>Смотрите карточки и выбираете массажистку по стилю и услугам.</p></li>
-        <li class="step"><span class="step__n">2</span><h3>Услуги</h3><p>Отмечаете одну или несколько услуг — длительность и сумма складываются.</p></li>
-        <li class="step"><span class="step__n">3</span><h3>Адрес</h3><p>Вводите адрес в Казани и выбираете вариант из подсказок.</p></li>
-        <li class="step"><span class="step__n">4</span><h3>Цена</h3><p>Сразу видите итог: услуги плюс выезд с учётом расстояния.</p></li>
-        <li class="step"><span class="step__n">5</span><h3>Подтверждение</h3><p>Администратор звонит, уточняет детали и подтверждает время.</p></li>
-        <li class="step"><span class="step__n">6</span><h3>Оплата по СБП</h3><p>После сеанса — по QR-коду, с учётом дополнительных услуг.</p></li>
+      <p class="eyebrow">Как мы работаем</p>
+      <h2 id="how-title" class="h2">Четыре шага до SPA дома</h2>
+      <ol class="steps steps--4">
+        <li class="step"><span class="step__n">1</span><h3>Заявка</h3><p>На сайте или по телефону. Стоимость с выездом видна сразу, администратор подтверждает время.</p></li>
+        <li class="step"><span class="step__n">2</span><h3>Привозим оборудование</h3><p>Складная кушетка, чистое бельё, полотенца, масла и всё для процедуры — с собой.</p></li>
+        <li class="step"><span class="step__n">3</span><h3>Процедура у вас дома</h3><p>Мастер готовит место за 10–15 минут, после сеанса оставляет порядок.</p></li>
+        <li class="step"><span class="step__n">4</span><h3>Оплата по QR после сеанса</h3><p>По СБП напрямую мастеру, с учётом услуг, добавленных во время визита.</p></li>
       </ol>
+      <div class="ritual__inner bring">
+        <div class="ritual__media">
+          <picture>
+            <source type="image/webp" srcset="images/ritual-600.webp 600w, images/ritual-1200.webp 1200w" sizes="(min-width: 860px) 420px, 100vw">
+            <img src="images/ritual-600.webp" alt="Масла, лаванда и тёплые камни для сеанса" loading="lazy" decoding="async" width="600" height="600">
+          </picture>
+        </div>
+        <div class="ritual__text">
+          <h3 class="h3">Что привезём</h3>
+          <ul class="ticks">
+            <li>Складную массажную кушетку (или используем вашу)</li>
+            <li>Одноразовые простыни и чистые полотенца</li>
+            <li>Масла без резкого запаха, по желанию — аромат</li>
+            <li>Свечи и музыку для атмосферы — если хотите</li>
+          </ul>
+          <p class="note">От вас — свободное место около 2×3 м и тёплая комната.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section section--dark" id="specialists" aria-labelledby="spec-title">
     <div class="container">
-      <p class="eyebrow">Специалистки</p>
-      <h2 id="spec-title" class="h2">Выберите, кто к вам приедет</h2>
-      <p class="note">Пример карточек: имена, описания и фотографии — демо (стоковые фото, не сотрудницы салона).</p>
+      <p class="eyebrow">Наши специалисты</p>
+      <h2 id="spec-title" class="h2">Выберите мастера, который к вам приедет</h2>
+      <p class="note">Имена, описания и фото — демо (стоковые фото).</p>
       <div class="spec-grid" id="specGrid"></div>
     </div>
   </section>
 
-
-  <section class="section" id="services" aria-labelledby="svc-title">
-    <div class="container">
-      <p class="eyebrow">Услуги</p>
-      <h2 id="svc-title" class="h2">Можно выбрать несколько</h2>
-      <p class="note">Длительность и цены — пример, у специалисток могут отличаться. Выезд считается отдельно.</p>
-      <ul class="svc-list" id="svcList"></ul>
+  <section class="section" id="gallery" aria-labelledby="gal-title">
+    <div class="container gallery">
+      <div class="gallery__text">
+        <p class="eyebrow">Атмосфера</p>
+        <h2 id="gal-title" class="h2">SPA-атмосфера в любой квартире</h2>
+        <p>Мы не просим идеального интерьера. Мастер расстелет кушетку, приглушит свет, зажжёт свечу и включит спокойную музыку — гостиная или спальня на час становится SPA-кабинетом.</p>
+        <p>Всё оборудование мобильное и помещается в одну сумку: кушетка, текстиль, масла, косметика. После визита — ни следа, кроме ощущения отдыха.</p>
+        <p class="note">Фото — демо (стоковые, Pexels).</p>
+      </div>
+      <div class="gallery__grid">
+        <img class="g1" src="images/gal-1.webp" alt="Кушетка с полотенцем и свечой" width="800" height="1000" loading="lazy" decoding="async">
+        <img src="images/gal-2.webp" alt="Массаж плеч и шеи" width="800" height="600" loading="lazy" decoding="async">
+        <img src="images/gal-3.webp" alt="Массаж спины на мобильной кушетке" width="800" height="600" loading="lazy" decoding="async">
+        <img src="images/gal-4.webp" alt="Массаж ног в приглушённом свете" width="800" height="600" loading="lazy" decoding="async">
+        <img src="images/gal-5.webp" alt="Массаж лица" width="800" height="600" loading="lazy" decoding="async">
+      </div>
     </div>
   </section>
 
-  <section class="section section--dark" id="booking" aria-labelledby="book-title">
+  <section class="section section--dark" id="reviews" aria-labelledby="rev-title">
     <div class="container">
-      <p class="eyebrow">Запись</p>
-      <h2 id="book-title" class="h2">Записаться на выезд</h2>
-      <p class="note">Прототип: форма работает в браузере и ничего не отправляет. Занятые слоты — демо.</p>
+      <p class="eyebrow">Отзывы клиентов</p>
+      <h2 id="rev-title" class="h2">Что говорят после визита</h2>
+      <p class="note">Это примеры. Здесь будут реальные отзывы с Авито.</p>
+      <div class="carousel" id="revCarousel" role="region" aria-roledescription="карусель" aria-label="Примеры отзывов" tabindex="0">
+        <div class="carousel__track" id="revTrack">
+          <article class="review" role="group" aria-roledescription="слайд" aria-label="1 из 4"><p class="review__tag">Пример отзыва — здесь будут реальные отзывы с Авито</p><blockquote>Здесь будет текст отзыва: как прошёл визит, понравился ли мастер, удобно ли было с оплатой.</blockquote><p class="review__who">Имя клиента · <span class="src">Авито</span></p></article>
+          <article class="review" role="group" aria-roledescription="слайд" aria-label="2 из 4"><p class="review__tag">Пример отзыва — здесь будут реальные отзывы с Авито</p><blockquote>Здесь будет отзыв о массаже для двоих или SPA-ритуале: атмосфера, пунктуальность, впечатления.</blockquote><p class="review__who">Имя клиента · <span class="src">Авито</span></p></article>
+          <article class="review" role="group" aria-roledescription="слайд" aria-label="3 из 4"><p class="review__tag">Пример отзыва — здесь будут реальные отзывы с Авито</p><blockquote>Здесь будет отзыв о подарочном сертификате: как оформили и как прошёл визит.</blockquote><p class="review__who">Имя клиента · <span class="src">Авито</span></p></article>
+          <article class="review" role="group" aria-roledescription="слайд" aria-label="4 из 4"><p class="review__tag">Пример отзыва — здесь будут реальные отзывы с Авито</p><blockquote>Здесь будет отзыв постоянного клиента: почему возвращается и к какому мастеру.</blockquote><p class="review__who">Имя клиента · <span class="src">Авито</span></p></article>
+        </div>
+        <div class="carousel__nav">
+          <button class="cbtn" type="button" id="revPrev" aria-label="Предыдущий отзыв">←</button>
+          <div class="dots" id="revDots"></div>
+          <button class="cbtn" type="button" id="revNext" aria-label="Следующий отзыв">→</button>
+        </div>
+      </div>
+      <h3 class="h3 videos__title">Видеоотзывы</h3>
+      <div class="videos">
+        <figure class="vthumb"><button type="button" data-video style="background-image:url(images/video-1.webp)" aria-label="Видеоотзыв клиента — появится после съёмки"><span class="play" aria-hidden="true"></span></button><figcaption>Видеоотзыв клиента (появится после съёмки)</figcaption></figure>
+        <figure class="vthumb"><button type="button" data-video style="background-image:url(images/video-2.webp)" aria-label="Видеоотзыв клиента — появится после съёмки"><span class="play" aria-hidden="true"></span></button><figcaption>Видеоотзыв клиента (появится после съёмки)</figcaption></figure>
+        <figure class="vthumb"><button type="button" data-video style="background-image:url(images/video-3.webp)" aria-label="Видеоотзыв клиента — появится после съёмки"><span class="play" aria-hidden="true"></span></button><figcaption>Видеоотзыв клиента (появится после съёмки)</figcaption></figure>
+      </div>
+      <p class="note" id="videoNote" aria-live="polite"></p>
+    </div>
+  </section>
 
+  <section class="section" id="founder" aria-labelledby="founder-title">
+    <div class="container founder">
+      <div class="founder__media"><span class="badge">Фото-заглушка</span><img src="images/founder.webp" alt="Фото-заглушка: основатель салона" width="600" height="750" loading="lazy" decoding="async"></div>
+      <div class="founder__text">
+        <p class="eyebrow">Обращение от основателя</p>
+        <h2 id="founder-title" class="h2">Слово основателю</h2>
+        <p>Мне хотелось, чтобы SPA можно было получить без дороги, пробок и спешки — дома, где вам спокойно. Поэтому мы приезжаем сами: привозим кушетку, чистое бельё, масла и всё, что нужно для процедуры, а после визита оставляем порядок.</p>
+        <p>С каждым мастером я знакомлюсь лично и слежу за качеством процедур. Цену вы видите до записи, а платите после сеанса — напрямую мастеру.</p>
+        <p>Моё обещание простое: бережное отношение, честная цена и мастер, которому можно доверять. Если что-то пойдёт не так — напишите мне, я разберусь.</p>
+        <p class="founder__sign">Регина, основатель</p>
+        <p class="note">Текст — черновик (демо).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="faq" aria-labelledby="faq-title">
+    <div class="container container--narrow">
+      <p class="eyebrow">Вопросы</p>
+      <h2 id="faq-title" class="h2">Частые вопросы</h2>
+      <div class="faq">
+        <details><summary>Нужна ли своя кушетка?</summary><p>Нет. Мастер привозит складную кушетку, одноразовые простыни, полотенца и масла. Если у вас есть своя кушетка — можно работать на ней.</p></details>
+        <details><summary>Как подготовить помещение?</summary><p>Нужно свободное место около 2×3 метра, тёплая комната (22–24 °C) и розетка рядом. Остальное мастер подготовит сам за 10–15 минут.</p></details>
+        <details><summary>Как происходит расчёт расстояния и оплаты?</summary><p id="faqZones">Стоимость = услуги + выезд. Выезд зависит от зоны — расстояния по дороге от нашей базы до вашего адреса. Дальше последней зоны — по договорённости. Оплата после сеанса по QR-коду СБП напрямую мастеру.</p></details>
+        <details><summary>Можно ли сделать массаж двоим?</summary><p>Да. Выберите «Массаж для двоих» — приедут два мастера и проведут сеанс одновременно. Можно и по очереди у одного мастера — укажите это в комментарии.</p></details>
+        <details><summary>Почему цена «предварительная»?</summary><p>Итог может измениться, если во время сеанса вы добавите услугу. Без вашего согласия сумма не меняется.</p></details>
+        <details><summary>Что значит «ожидайте подтверждения»?</summary><p>Выбранное время держится за вами 60 минут. За это время администратор звонит и подтверждает запись. Если связаться не удалось, время снова становится свободным.</p></details>
+        <details><summary>Можно ли отменить или перенести запись?</summary><p>Да, сообщите администратору. Правила отмены — демо, уточним при запуске.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lead" aria-labelledby="lead-title">
+    <div class="container">
+      <div class="leadbox">
+        <div>
+          <p class="eyebrow">Расчёт по телефону</p>
+          <h2 id="lead-title" class="h2">Оставьте номер телефона и получите предварительную стоимость массажа</h2>
+          <p class="note">Перезвоним, уточним адрес и пожелания и назовём цену с выездом.</p>
+        </div>
+        <form class="leadform" id="leadForm" novalidate>
+          <div class="field"><label for="leadPhone">Телефон</label><input id="leadPhone" type="tel" data-mask autocomplete="tel" inputmode="tel" placeholder="+7 (900) 000-00-00" required></div>
+          <div class="field field--check"><input id="leadAgree" type="checkbox" required><label for="leadAgree">Согласен(на) на обработку персональных данных по <a href="privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a></label></div>
+          <p class="error" id="leadErr" role="alert"></p>
+          <button class="btn btn--gold btn--shine" type="submit">Получить расчёт</button>
+          <p class="leadform__ok" id="leadOk" role="status" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="footer__bg" aria-hidden="true"></div>
+  <div class="container footer__inner footer__inner--v2">
+    <div class="footer__brand">
+      <span class="wordmark wordmark--light">Лучший выездной <span>спа</span></span>
+      <p>Массаж и SPA-уходы на дому по Казани и пригородам.</p>
+      <p class="footer__exec">Исполнитель: Гафиятова Р. Р. (самозанятая, реквизиты — демо)</p>
+    </div>
+    <div>
+      <h2 class="footer__h">Контакты</h2>
+      <dl class="contacts__list footer__contacts" id="contactsList">
+        <div><dt>Телефон</dt><dd>+7 (000) 000-00-00</dd></div>
+      </dl>
+    </div>
+    <div>
+      <h2 class="footer__h">Разделы</h2>
+      <nav class="footer__nav" aria-label="Разделы в подвале">
+        <a href="#services">Услуги и цены</a><a href="#promos">Акции</a><a href="#specialists">Мастера</a><a href="#reviews">Отзывы</a><a href="#faq">Вопросы</a><a href="#booking" data-book>Запись</a>
+      </nav>
+      <a class="btn btn--gold btn--shine btn--sm footer__cta" href="#booking" data-book>Заказать выезд</a>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <span><a href="privacy.html">Политика конфиденциальности</a> · <a href="offer.html">Договор-оферта</a></span>
+    <span>Прототип, данные — демо. Фото — Pexels. <a class="footer__admin" href="admin/">Админка (демо)</a></span>
+  </div>
+</footer>
+
+<dialog class="dlg dlg--wide" id="bookDlg" aria-labelledby="book-title">
+  <div class="dlg__head">
+    <div><p class="eyebrow">Запись / расчёт стоимости</p><h2 id="book-title" class="h3">Заказать выезд мастера</h2></div>
+    <button class="dlg__x" type="button" data-dlg-close aria-label="Закрыть">×</button>
+  </div>
+  <section id="booking" aria-label="Форма записи">
       <div class="booking">
         <form class="wizard" id="wizard" novalidate>
           <div class="picked" id="picked" aria-live="polite" hidden></div>
           <ol class="progress" id="progress" aria-label="Шаги записи">
-            <li data-step="1">Специалистка</li><li data-step="2">Услуги</li><li data-step="3">Адрес</li><li data-step="4">Время</li><li data-step="5">Контакты</li>
+            <li data-step="1">Мастер</li><li data-step="2">Услуги</li><li data-step="3">Адрес</li><li data-step="4">Время</li><li data-step="5">Контакты</li>
           </ol>
 
           <fieldset class="panel" data-step="1">
-            <legend class="panel__title" tabindex="-1">1. Выберите специалистку</legend>
+            <legend class="panel__title" tabindex="-1">1. Выберите мастера</legend>
             <div class="choice-list" id="specChoices"></div>
             <p class="error" id="err1" role="alert"></p>
           </fieldset>
@@ -135,7 +313,7 @@
             <p class="hint" id="durHint"></p>
             <div class="days" id="days" role="radiogroup" aria-label="Дата"></div>
             <div class="slots" id="slots" role="radiogroup" aria-label="Время начала"></div>
-            <p class="legend-line"><span class="dot dot--free"></span>свободно <span class="dot dot--busy"></span>занято (демо) <span class="dot dot--hold"></span>ожидает подтверждения</p>
+            <p class="legend-line"><span class="dot dot--free"></span>свободно <span class="dot dot--busy"></span>занято <span class="dot dot--hold"></span>ожидает подтверждения</p>
             <p class="error" id="err4" role="alert"></p>
           </fieldset>
 
@@ -144,7 +322,7 @@
             <div class="field"><label for="name">Имя</label><input id="name" type="text" autocomplete="given-name" required></div>
             <div class="field"><label for="phone">Телефон</label><input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 (900) 000-00-00" required></div>
             <div class="field"><label for="comment">Комментарий <span class="muted">(необязательно)</span></label><textarea id="comment" rows="3" placeholder="Домофон, парковка, пожелания по давлению"></textarea></div>
-            <div class="field field--check"><input id="agree" type="checkbox" required><label for="agree">Согласен(на) на обработку персональных данных (в прототипе ничего не сохраняется на сервере)</label></div>
+            <div class="field field--check"><input id="agree" type="checkbox" required><label for="agree">Согласен(на) на обработку персональных данных по <a href="privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a></label></div>
             <p class="error" id="err5" role="alert"></p>
           </fieldset>
 
@@ -161,84 +339,48 @@
           <div class="summary__total" aria-live="polite"><span>Предварительно</span><strong id="total">—</strong></div>
           <details class="formula">
             <summary>Как считаем цену</summary>
-            <p>P = S + max(T + max(0, D − D<sub>0</sub>) × R, T<sub>min</sub>)</p>
+            <p id="formulaHead"></p>
             <p id="formulaVals" class="muted"></p>
           </details>
         </aside>
       </div>
-    </div>
   </section>
+</dialog>
 
-  <section class="section ritual" aria-labelledby="ritual-title">
-    <div class="container ritual__inner">
-      <div class="ritual__media">
-        <picture>
-          <source type="image/webp" srcset="images/ritual-600.webp 600w, images/ritual-1200.webp 1200w" sizes="(min-width: 860px) 480px, 100vw">
-          <img src="images/ritual-600.webp" alt="Масла, лаванда и тёплые камни для сеанса" loading="lazy" decoding="async" width="600" height="600">
-        </picture>
-      </div>
-      <div class="ritual__text">
-        <p class="eyebrow">Что привезём</p>
-        <h2 id="ritual-title" class="h2">Всё для сеанса — с собой</h2>
-        <ul class="ticks">
-          <li>Складной массажный стол и чистые полотенца</li>
-          <li>Масла без резкого запаха, по желанию — аромат</li>
-          <li>Одноразовые простыни для каждого клиента</li>
-          <li>Нужна только свободная площадь около 2×3 м</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--dark" id="faq" aria-labelledby="faq-title">
-    <div class="container container--narrow">
-      <p class="eyebrow">Вопросы</p>
-      <h2 id="faq-title" class="h2">Частые вопросы</h2>
-      <div class="faq">
-        <details><summary>Когда и как я плачу?</summary><p>После сеанса. Администратор пришлёт итоговую сумму с учётом дополнительных услуг, вы оплатите по QR-коду через СБП в приложении своего банка.</p></details>
-        <details><summary>Почему цена «предварительная»?</summary><p>Итог может измениться, если во время сеанса вы добавите услугу или администратор уточнит маршрут. Без вашего согласия сумма не меняется.</p></details>
-        <details><summary>Как считается стоимость выезда?</summary><p>В базовый выезд входит несколько километров от точки, откуда едет специалистка. Каждый следующий километр по дороге — по фиксированному тарифу. Есть минимальная стоимость выезда и максимальная зона обслуживания.</p></details>
-        <details><summary>Что значит «ожидайте подтверждения»?</summary><p>Выбранное время держится за вами 60 минут. За это время администратор звонит и подтверждает запись. Если связаться не удалось, время снова становится свободным.</p></details>
-        <details><summary>Можно ли отменить или перенести запись?</summary><p>Да, сообщите администратору. Правила отмены салон уточнит отдельно (в прототипе — пример).</p></details>
-        <details><summary>Что нужно подготовить дома?</summary><p>Свободное место примерно 2×3 метра и тёплое помещение. Стол, масла и полотенца специалистка привезёт.</p></details>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--surface" id="contacts" aria-labelledby="ct-title">
-    <div class="container contacts">
-      <div>
-        <p class="eyebrow">Контакты</p>
-        <h2 id="ct-title" class="h2">Связаться с администратором</h2>
-        <p class="note">Контакты — заглушки для прототипа.</p>
-      </div>
-      <dl class="contacts__list" id="contactsList">
-        <div><dt>Телефон</dt><dd>+7 (000) 000-00-00</dd></div>
-        <div><dt>Telegram</dt><dd>@example_spa_bot</dd></div>
-        <div><dt>Часы работы</dt><dd>Ежедневно 09:00–21:00 (пример)</dd></div>
-        <div><dt>Зона выезда</dt><dd>Казань и ближайшие пригороды</dd></div>
-      </dl>
-    </div>
-  </section>
-</main>
-
-<footer class="footer" id="footer">
-  <div class="footer__bg" aria-hidden="true"></div>
-  <div class="container footer__inner">
-    <div class="footer__brand">
-      <span class="wordmark wordmark--light">Лучший выездной <span>спа</span></span>
-      <p>Массаж и спа-уход на дому по Казани и пригородам.</p>
-    </div>
-    <nav class="footer__nav" aria-label="Разделы">
-      <a href="#how">Как это работает</a><a href="#specialists">Специалистки</a><a href="#services">Услуги</a><a href="#booking">Запись</a><a href="#faq">Вопросы</a><a href="#contacts">Контакты</a>
-    </nav>
-    <a class="btn btn--gold btn--shine" href="#booking">Записаться</a>
+<dialog class="dlg" id="priceDlg" aria-labelledby="price-title">
+  <div class="dlg__head">
+    <div><p class="eyebrow">Прайс (демо)</p><h2 id="price-title" class="h3">Услуги и цены</h2></div>
+    <button class="dlg__x" type="button" data-dlg-close aria-label="Закрыть">×</button>
   </div>
-  <div class="container footer__bottom">
-    <span>Прототип интерфейса. Имена, цены, контакты и расписание — условные.</span>
-    <span>Фото специалисток — стоковые (Pexels). <a class="footer__admin" href="admin/">Админка (демо)</a></span>
+  <div class="ptabs" role="group" aria-label="Раздел прайса">
+    <button type="button" data-pf="all" aria-pressed="true">Все</button><button type="button" data-pf="massage" aria-pressed="false">Массаж</button><button type="button" data-pf="spa" aria-pressed="false">SPA</button><button type="button" data-pf="duo" aria-pressed="false">Для двоих</button>
   </div>
-</footer>
+  <ul class="svc-list" id="svcList"></ul>
+  <p class="note" id="priceZones"></p>
+  <div class="dlg__foot"><a class="btn btn--gold btn--shine" href="#booking" data-book>Рассчитать стоимость</a></div>
+</dialog>
+
+<dialog class="dlg" id="certDlg" aria-labelledby="cert-title">
+  <div class="dlg__head">
+    <div><p class="eyebrow">В подарок</p><h2 id="cert-title" class="h3">Купить сертификат</h2></div>
+    <button class="dlg__x" type="button" data-dlg-close aria-label="Закрыть">×</button>
+  </div>
+  <form id="certForm" novalidate>
+    <p class="note" style="margin-top:0">Прототип: оплата не подключена. Заявка придёт администратору, он перезвонит.</p>
+    <fieldset class="nominals"><legend>Номинал</legend>
+      <label><input type="radio" name="nominal" value="3000"><span>3 000 ₽</span></label>
+      <label><input type="radio" name="nominal" value="5000" checked><span>5 000 ₽</span></label>
+      <label><input type="radio" name="nominal" value="7000"><span>7 000 ₽</span></label>
+      <label><input type="radio" name="nominal" value="10000"><span>10 000 ₽</span></label>
+    </fieldset>
+    <div class="field"><label for="certName">Ваше имя</label><input id="certName" type="text" autocomplete="given-name" required></div>
+    <div class="field"><label for="certPhone">Телефон</label><input id="certPhone" type="tel" data-mask autocomplete="tel" inputmode="tel" placeholder="+7 (900) 000-00-00" required></div>
+    <div class="field field--check"><input id="certAgree" type="checkbox" required><label for="certAgree">Согласен(на) на обработку персональных данных по <a href="privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a></label></div>
+    <p class="error" id="certErr" role="alert"></p>
+    <div class="dlg__foot"><button class="btn btn--gold btn--shine" type="submit">Оформить заявку</button></div>
+    <p class="leadform__ok" id="certOk" role="status" hidden></p>
+  </form>
+</dialog>
 
 <div class="modal" id="modal" hidden>
   <div class="modal__backdrop" data-close></div>

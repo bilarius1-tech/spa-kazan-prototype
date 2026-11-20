@@ -201,3 +201,41 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)
 .cal__times span:first-child{transform:translateY(2px)}
 .cal__times span:last-child{transform:translateY(-110%)}
 @media(min-width:861px){.app{background:linear-gradient(90deg,var(--surface) 231px,var(--border) 231px,var(--border) 232px,transparent 232px)}.sidebar{border-right:0}}
+
+/* выезд по зонам */
+.modes{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px}
+.zfs{border:var(--bw) solid var(--border);border-radius:8px;padding:10px 14px 14px;margin:12px 0;min-width:0}
+.zfs legend{padding:0 6px}
+.zfs.is-off{opacity:.55}
+.ztable input{width:100%;min-width:70px}
+@media(max-width:760px){
+  .ztable thead{display:table-header-group}
+  .ztable{display:table}.ztable tbody{display:table-row-group}.ztable tr{display:table-row;padding:0}
+  .ztable td{display:table-cell;width:auto;padding:4px 6px}
+  .ztable td[data-l]::before{content:none}
+}
+
+/* калькулятор мастера (/master/) */
+.mc{display:grid;gap:18px;align-items:start}
+@media(min-width:900px){.mc{grid-template-columns:1.2fr 1fr}}
+.mc .panel h2{margin-bottom:10px}
+.mc-svc{display:grid;gap:8px}
+.mc-svc label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:var(--bw) solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer}
+.mc-svc label:has(input:checked){border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.mc-svc input{width:18px;height:18px;accent-color:var(--accent)}
+.mc-svc .t{flex:1}
+.mc-svc .p{font-weight:700;white-space:nowrap}
+.combo{position:relative}
+.combo__list{position:absolute;left:0;right:0;top:100%;z-index:5;list-style:none;margin:4px 0 0;padding:6px;background:var(--surface);border:var(--bw) solid var(--primary);border-radius:6px;box-shadow:var(--shadow);max-height:240px;overflow:auto}
+.combo__list li{padding:9px 10px;border-radius:4px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+.combo__list li span{font-size:12px;color:var(--muted)}
+.combo__list li[aria-selected=true],.combo__list li:hover{background:var(--bg)}
+.mc-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px;border-top:2px solid var(--primary)}
+.mc-total strong{font:500 30px var(--serif)}
+.mc .qr{margin-top:14px}
+.login__who{display:grid;gap:8px;margin:14px 0}
+.master .topbar{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:var(--bw) solid var(--border);position:sticky;top:0;z-index:20}
+.master .topbar__user{margin-left:auto}
+.master .main{padding:24px 20px 48px}
+.master .calc .sub{font-size:12px;color:var(--muted)}
+@media(max-width:600px){.master .topbar__title .muted{display:none}.master .topbar{padding:8px 14px}.master .topbar__user{font-size:12px}}
