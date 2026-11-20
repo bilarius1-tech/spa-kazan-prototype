@@ -125,7 +125,7 @@
   function renderSpecChoices() {
     $("#specChoices").innerHTML = D.specialists.map(function (s) {
       return '<label class="choice"><input type="radio" name="spec" value="' + s.id + '"' + (state.spec && state.spec.id === s.id ? " checked" : "") + '><span class="choice__mark" aria-hidden="true"></span>' +
-        picture(s, "52px", "choice__img", "") + '<span class="choice__main"><span class="choice__title">' + s.name + '</span><span class="choice__sub"> · ' + s.role + "</span></span></label>";
+        '<img class="choice__img" src="' + avatar(s) + '" alt="" width="56" height="56" loading="lazy" decoding="async">' + '<span class="choice__main"><span class="choice__title">' + s.name + '</span><span class="choice__sub"> · ' + s.role + "</span></span></label>";
     }).join("");
     $$('#specChoices input').forEach(function (i) { i.addEventListener("change", function () { selectSpec(i.value); }); });
   }
@@ -243,9 +243,21 @@
   }
 
   /* сводка */
+  function avatar(spec) { return "images/" + spec.img.replace("specialist", "avatar") + ".webp"; }
+  function who(spec) {
+    return '<span class="who"><img src="' + avatar(spec) + '" alt="" width="32" height="32" decoding="async">' + spec.name + "</span>";
+  }
+  function renderPicked() {
+    var el = $("#picked"), sp = state.spec;
+    if (!sp) { el.hidden = true; el.innerHTML = ""; return; }
+    el.hidden = false;
+    el.innerHTML = '<img src="' + avatar(sp) + '" alt="" width="48" height="48" decoding="async"><span class="picked__txt"><b>' + sp.name + "</b>" + sp.role + "</span>" +
+      (state.step > 1 ? '<button type="button" id="changeSpec">Сменить</button>' : "");
+    var b = $("#changeSpec"); if (b) b.addEventListener("click", function () { goStep(1); });
+  }
   function rows(r) {
     var out = [];
-    out.push(["Специалистка", state.spec ? state.spec.name : "—"]);
+    out.push(["Специалистка", state.spec ? who(state.spec) : "—"]);
     out.push(["Услуги", state.svcs.length ? state.svcs.map(function (id) { return svcById[id].title; }).join(", ") : "—"]);
     out.push(["Длительность", r.dur ? durLabel(r.dur) : "—"]);
     out.push(["Адрес", state.place ? state.place.name + ($("#house").value ? ", д. " + $("#house").value : "") : "—"]);
@@ -256,6 +268,7 @@
   }
   function renderSummary() {
     var r = calc();
+    renderPicked();
     $("#summary").innerHTML = rows(r).map(function (x) { return "<div><dt>" + x[0] + "</dt><dd>" + x[1] + "</dd></div>"; }).join("");
     $("#total").textContent = r.P != null ? rub(r.P) : r.out && r.S ? rub(r.S) + " + выезд" : r.S ? "от " + rub(r.S) : "—";
     $("#totalMini").textContent = $("#total").textContent;
@@ -295,6 +308,7 @@
       if (s === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
     });
     $("#backBtn").disabled = n === 1;
+    renderPicked();
     $("#nextBtn").textContent = n === 5 ? "Отправить заявку" : "Далее";
     if (n === 4) { if (!state.day) state.day = new Date(new Date().setHours(0, 0, 0, 0)); renderDays(); renderSlots(); }
     var t = $('.panel[data-step="' + n + '"] .panel__title'); if (t && document.activeElement !== document.body) t.focus({ preventScroll: true });
@@ -353,6 +367,14 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
+
+  /* подвал: фон грузим, когда подвал близко */
+  (function () {
+    var f = $("#footer"); if (!f) return;
+    if (!("IntersectionObserver" in window)) { f.classList.add("is-bg"); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { f.classList.add("is-bg"); io.disconnect(); } }); }, { rootMargin: "600px" });
+    io.observe(f);
+  })();
 
   /* init */
   renderSpecs(); renderServices(); renderSpecChoices(); renderSvcChoices(); renderSummary(); goStep(1);

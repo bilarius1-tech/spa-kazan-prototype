@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Выездной массаж на дому в Казани — прототип</title>
+<title>Лучший выездной спа в Казани — массаж на дому (прототип)</title>
 <meta name="description" content="Прототип сайта выездного спа в Казани: выбор специалистки, услуги, расчёт стоимости выезда и запись на удобное время.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#E9DDC6">
@@ -20,7 +20,7 @@
 
 <header class="header" id="top">
   <div class="container header__inner">
-    <a class="wordmark" href="#top" aria-label="На главную">Выездной спа <span>Казань</span></a>
+    <a class="wordmark" href="#top" aria-label="Лучший выездной спа в Казани — на главную">Лучший выездной <span>спа</span></a>
     <nav class="nav" aria-label="Основное меню">
       <a href="#how">Как это работает</a>
       <a href="#specialists">Специалистки</a>
@@ -39,8 +39,8 @@
     </picture>
     <div class="hero__shade" aria-hidden="true"></div>
     <div class="container hero__content">
-      <p class="eyebrow eyebrow--light">Выездной массаж · Казань</p>
-      <h1 id="hero-title" class="display">Спа-ритуал у&nbsp;вас дома</h1>
+      <p class="eyebrow eyebrow--light">Массаж и спа-уход на дому</p>
+      <h1 id="hero-title" class="display">Лучший выездной спа в&nbsp;Казани</h1>
       <p class="hero__lead">Профессиональная массажистка приедет к вам со столом, маслами и полотенцами. Выберите специалистку и услуги — стоимость с выездом посчитаем сразу.</p>
       <div class="hero__actions">
         <a class="btn btn--gold btn--shine" href="#booking">Записаться</a>
@@ -69,7 +69,7 @@
     </div>
   </section>
 
-  <section class="section section--surface" id="specialists" aria-labelledby="spec-title">
+  <section class="section section--dark" id="specialists" aria-labelledby="spec-title">
     <div class="container">
       <p class="eyebrow">Специалистки</p>
       <h2 id="spec-title" class="h2">Выберите, кто к вам приедет</h2>
@@ -78,26 +78,6 @@
     </div>
   </section>
 
-  <section class="section ritual" aria-labelledby="ritual-title">
-    <div class="container ritual__inner">
-      <div class="ritual__media">
-        <picture>
-          <source type="image/webp" srcset="images/ritual-600.webp 600w, images/ritual-1200.webp 1200w" sizes="(min-width: 860px) 480px, 100vw">
-          <img src="images/ritual-600.webp" alt="Масла, лаванда и тёплые камни для сеанса" loading="lazy" decoding="async" width="600" height="600">
-        </picture>
-      </div>
-      <div class="ritual__text">
-        <p class="eyebrow">Что привезём</p>
-        <h2 id="ritual-title" class="h2">Всё для сеанса — с собой</h2>
-        <ul class="ticks">
-          <li>Складной массажный стол и чистые полотенца</li>
-          <li>Масла без резкого запаха, по желанию — аромат</li>
-          <li>Одноразовые простыни для каждого клиента</li>
-          <li>Нужна только свободная площадь около 2×3 м</li>
-        </ul>
-      </div>
-    </div>
-  </section>
 
   <section class="section" id="services" aria-labelledby="svc-title">
     <div class="container">
@@ -108,7 +88,7 @@
     </div>
   </section>
 
-  <section class="section section--surface" id="booking" aria-labelledby="book-title">
+  <section class="section section--dark" id="booking" aria-labelledby="book-title">
     <div class="container">
       <p class="eyebrow">Запись</p>
       <h2 id="book-title" class="h2">Записаться на выезд</h2>
@@ -116,6 +96,7 @@
 
       <div class="booking">
         <form class="wizard" id="wizard" novalidate>
+          <div class="picked" id="picked" aria-live="polite" hidden></div>
           <ol class="progress" id="progress" aria-label="Шаги записи">
             <li data-step="1">Специалистка</li><li data-step="2">Услуги</li><li data-step="3">Адрес</li><li data-step="4">Время</li><li data-step="5">Контакты</li>
           </ol>
@@ -188,7 +169,28 @@
     </div>
   </section>
 
-  <section class="section" id="faq" aria-labelledby="faq-title">
+  <section class="section ritual" aria-labelledby="ritual-title">
+    <div class="container ritual__inner">
+      <div class="ritual__media">
+        <picture>
+          <source type="image/webp" srcset="images/ritual-600.webp 600w, images/ritual-1200.webp 1200w" sizes="(min-width: 860px) 480px, 100vw">
+          <img src="images/ritual-600.webp" alt="Масла, лаванда и тёплые камни для сеанса" loading="lazy" decoding="async" width="600" height="600">
+        </picture>
+      </div>
+      <div class="ritual__text">
+        <p class="eyebrow">Что привезём</p>
+        <h2 id="ritual-title" class="h2">Всё для сеанса — с собой</h2>
+        <ul class="ticks">
+          <li>Складной массажный стол и чистые полотенца</li>
+          <li>Масла без резкого запаха, по желанию — аромат</li>
+          <li>Одноразовые простыни для каждого клиента</li>
+          <li>Нужна только свободная площадь около 2×3 м</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="faq" aria-labelledby="faq-title">
     <div class="container container--narrow">
       <p class="eyebrow">Вопросы</p>
       <h2 id="faq-title" class="h2">Частые вопросы</h2>
@@ -220,10 +222,21 @@
   </section>
 </main>
 
-<footer class="footer">
+<footer class="footer" id="footer">
+  <div class="footer__bg" aria-hidden="true"></div>
   <div class="container footer__inner">
-    <span>Выездной спа · Казань</span>
-    <span class="muted">Прототип интерфейса. Все данные условные.</span>
+    <div class="footer__brand">
+      <span class="wordmark wordmark--light">Лучший выездной <span>спа</span></span>
+      <p>Массаж и спа-уход на дому по Казани и пригородам.</p>
+    </div>
+    <nav class="footer__nav" aria-label="Разделы">
+      <a href="#how">Как это работает</a><a href="#specialists">Специалистки</a><a href="#services">Услуги</a><a href="#booking">Запись</a><a href="#faq">Вопросы</a><a href="#contacts">Контакты</a>
+    </nav>
+    <a class="btn btn--gold btn--shine" href="#booking">Записаться</a>
+  </div>
+  <div class="container footer__bottom">
+    <span>Прототип интерфейса. Имена, цены, контакты и расписание — условные.</span>
+    <span>Фото специалисток — стоковые (Pexels).</span>
   </div>
 </footer>
 
