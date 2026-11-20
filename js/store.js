@@ -42,7 +42,7 @@ window.SpaStore = (function () {
   function priceFor(spec, sid) { var s = svcById(sid); return (spec && spec.priceOverride && spec.priceOverride[sid]) || (s ? s.price : 0); }
 
   /* ---- цена ----
-     mode "zones" (по умолчанию): выезд = цена зоны по км от базы салона (ул. Яники, 17б); дальше последней зоны — вручную.
+     mode "zones" (по умолчанию): выезд = цена зоны по км от базы салона (ул. Амирхана Еники, 17Б); дальше последней зоны — вручную.
      mode "formula": P = S + max(T + max(0, D − D0) × R, Tmin) от точки специалистки; D > Dmax — вручную.
      opts.couch — аренда кушетки (калькулятор мастера). */
   function haversine(a, b) {
