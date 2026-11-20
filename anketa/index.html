@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Опросник для Регины — Лучший выездной спа в Казани</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#E9DDC6">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="anketa.css">
+</head>
+<body class="anketa">
+<a class="skip" href="#anketa">Перейти к опроснику</a>
+<div class="demo-bar" role="note">Данные никуда не отправляются и остаются только в этом браузере. Скачайте файл и пришлите его Алексею.</div>
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="wordmark" href="../">Лучший выездной <span>спа</span></a>
+    <span class="header__tag">Опросник</span>
+    <a class="btn btn--line btn--sm" href="../">На сайт</a>
+  </div>
+</header>
+
+<main class="container container--narrow">
+  <div class="intro">
+    <h1>Опросник для запуска сайта</h1>
+    <p class="lead">Регина, здравствуйте. Здесь можно сразу указать контакты, сотрудниц и правила работы салона. По вашим ответам мы составим техническое задание.</p>
+  </div>
+
+  <div class="notice" role="note">
+    <p><strong>Ничего не уходит с вашего телефона.</strong> Ответы сохраняются только в этом браузере как черновик. На сервер они не отправляются, аналитики нет.</p>
+    <p>Когда заполните — нажмите «Скачать ответы (.txt)» и пришлите файл Алексею в Telegram или MAX. Можно также скопировать текст.</p>
+    <p><strong>Фото сотрудниц, логотип и другие файлы в форму не загружайте</strong> — пришлите их отдельно в MAX или Telegram.</p>
+    <p>Поля со знаком <span class="star" title="Нужно для запуска">★</span> особенно важны для старта. На часть вопросов мы уже поставили варианты «как поняли из разговора» — поправьте, если иначе.</p>
+  </div>
+
+  <nav class="toc" aria-label="Разделы опросника">
+    <a href="#sec-contacts">1. Контакты</a>
+    <a href="#sec-staff">2. Сотрудники</a>
+    <a href="#sec-logic">3. Логика работы</a>
+    <a href="#sec-comments">4. Комментарии</a>
+  </nav>
+
+  <form id="anketa" action="#" method="dialog" novalidate>
+    <section class="sec" id="sec-contacts">
+      <div class="sec__head">
+        <h2>1. Контакты и реквизиты Регины</h2>
+        <p class="muted">Эти данные нужны для сайта, договоров и связи. Они попадут только в скачанный файл.</p>
+      </div>
+      <div class="field"><label for="fio">ФИО <span class="star">★</span></label><input id="fio" name="fio" type="text" autocomplete="name" value="Гафиятова Регина"></div>
+      <div class="grid2">
+        <div class="field"><label for="inn">ИНН</label><input id="inn" name="inn" type="text" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="12 цифр"></div>
+        <div class="field"><label for="phone">Телефон <span class="star">★</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7"></div>
+      </div>
+      <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
+      <div class="grid2">
+        <div class="field"><label for="telegram">Telegram <span class="star">★</span></label><input id="telegram" name="telegram" type="text" autocomplete="off" placeholder="@username"></div>
+        <div class="field"><label for="maxid">MAX <span class="muted">(по желанию)</span></label><input id="maxid" name="maxid" type="text" autocomplete="off" placeholder="телефон или ник в MAX"></div>
+      </div>
+      <div class="field"><label for="siteName">Название для сайта</label><input id="siteName" name="siteName" type="text" value="Лучший выездной спа в Казани"></div>
+      <div class="field">
+        <label for="baseAddress">Адрес базы выезда <span class="star">★</span></label>
+        <input id="baseAddress" name="baseAddress" type="text" value="г. Казань, ул. Амирхана Еники, 17Б">
+        <p class="hint">От этого адреса считаем зоны выезда. Можно поправить, если точка другая.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-staff">
+      <div class="sec__head">
+        <h2>2. Сотрудники</h2>
+        <p class="muted">Можно добавить столько карточек, сколько нужно. Если кого-то ещё нет — оставьте пустую карточку или напишите «пока ищем».</p>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Сколько сотрудниц на старте? <span class="star">★</span></legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="staffCount" value="3"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">3</span></span></label>
+            <label class="choice"><input type="radio" name="staffCount" value="4"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">4</span></span></label>
+            <label class="choice"><input type="radio" name="staffCount" value="5"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">5</span></span></label>
+            <label class="choice"><input type="radio" name="staffCount" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="staffCountOther">Сколько именно</label><input id="staffCountOther" name="staffCountOther" type="text" inputmode="numeric"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Регина тоже принимает клиентов?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="reginaWorks" value="да, принимает клиентов"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, сама выезжает</span></span></label>
+            <label class="choice"><input type="radio" name="reginaWorks" value="нет, только администрирует"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, только администрирует</span></span></label>
+            <label class="choice"><input type="radio" name="reginaWorks" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="reginaWorksOther">Уточните</label><input id="reginaWorksOther" name="reginaWorksOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <p class="photo-note">Фото сотрудниц пришлите отдельно в MAX или Telegram. Сюда их загружать не нужно: так они нигде не сохранятся случайно.</p>
+
+      <div id="staffList"></div>
+      <div class="staff-actions">
+        <button type="button" class="btn btn--line btn--sm" id="addStaff">Добавить сотрудницу</button>
+      </div>
+    </section>
+    <section class="sec" id="sec-logic">
+      <div class="sec__head">
+        <h2>3. Фундаментальные вопросы логики</h2>
+        <p class="muted">Достаточно отметить подходящий вариант. Если нужен свой — выберите «Другое» и напишите коротко.</p>
+      </div>
+
+      <h3 class="subh">Оплата и юридические вопросы</h3>
+
+      <div class="q">
+        <fieldset>
+          <legend>Юридический статус Регины <span class="star">★</span></legend>
+          <p class="known">Как поняли: самозанятая (НПД).</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="legalStatus" value="самозанятая (НПД)" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Самозанятая (НПД)</span></span></label>
+            <label class="choice"><input type="radio" name="legalStatus" value="ИП"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">ИП</span><span class="choice__sub">Ниже можно указать систему налогообложения</span></span></label>
+            <label class="choice"><input type="radio" name="legalStatus" value="ООО"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">ООО</span></span></label>
+            <label class="choice"><input type="radio" name="legalStatus" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="legalStatusOther">Уточните статус</label><input id="legalStatusOther" name="legalStatusOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="legalBank">Банк, расчётный счёт или куда приходят переводы Регине</label>
+        <input id="legalBank" name="legalBank" type="text" placeholder="Например: Сбер, Тинькофф. Номер счёта писать не обязательно">
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Как оформлены массажистки? <span class="star">★</span></legend>
+          <p class="known">Как поняли: все, включая Регину, — самозанятые.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="staffLegal" value="все самозанятые (НПД)" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Все самозанятые</span></span></label>
+            <label class="choice"><input type="radio" name="staffLegal" value="сотрудники салона"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сотрудники салона</span></span></label>
+            <label class="choice"><input type="radio" name="staffLegal" value="по договорам ГПХ"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">По договорам ГПХ</span></span></label>
+            <label class="choice"><input type="radio" name="staffLegal" value="по-разному"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">По-разному</span></span></label>
+            <label class="choice"><input type="radio" name="staffLegal" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="staffLegalOther">Уточните</label><input id="staffLegalOther" name="staffLegalOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Куда идут деньги за массаж? <span class="star">★</span></legend>
+          <p class="known">Как поняли: напрямую каждой мастерице, Регина не принимает оплату за чужие услуги.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="moneyTo" value="напрямую каждой мастерице" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Напрямую каждой мастерице</span></span></label>
+            <label class="choice"><input type="radio" name="moneyTo" value="на счёт салона"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">На счёт салона</span></span></label>
+            <label class="choice"><input type="radio" name="moneyTo" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="moneyToOther">Уточните</label><input id="moneyToOther" name="moneyToOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Как клиент платит мастеру? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="payHow" value="перевод на карту мастера"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Перевод на карту мастера</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="payHow" value="QR СБП мастера"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">QR-код СБП мастера</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="payHow" value="наличные мастеру"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Наличные мастеру</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="payHow" value="предоплата на сайте"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Предоплата на сайте</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="payHow" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="payHowOther">Уточните способ оплаты</label><input id="payHowOther" name="payHowOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Нужна ли предоплата или депозит при подтверждении?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="prepay" value="нет предоплаты"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет предоплаты</span></span></label>
+            <label class="choice"><input type="radio" name="prepay" value="депозит при подтверждении"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Депозит при подтверждении</span></span></label>
+            <label class="choice"><input type="radio" name="prepay" value="частичная предоплата"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Частичная предоплата</span></span></label>
+            <label class="choice"><input type="radio" name="prepay" value="100% предоплата"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">100% предоплата</span></span></label>
+            <label class="choice"><input type="radio" name="prepay" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="prepayOther">Сумма или процент, когда берём</label><input id="prepayOther" name="prepayOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="q">
+        <fieldset>
+          <legend>Правила отмены: за сколько часов бесплатно?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="cancelRules" value="бесплатная отмена за 24 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 24 часа</span></span></label>
+            <label class="choice"><input type="radio" name="cancelRules" value="бесплатная отмена за 12 часов"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 12 часов</span></span></label>
+            <label class="choice"><input type="radio" name="cancelRules" value="бесплатная отмена за 3 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 3 часа</span></span></label>
+            <label class="choice"><input type="radio" name="cancelRules" value="бесплатная отмена за 2 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 2 часа</span></span></label>
+            <label class="choice"><input type="radio" name="cancelRules" value="предоплату не возвращаем"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Предоплату не возвращаем</span></span></label>
+            <label class="choice"><input type="radio" name="cancelRules" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="cancelRulesOther">Свои правила отмены</label><input id="cancelRulesOther" name="cancelRulesOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Что если клиент не пришёл или отменил слишком поздно?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="noShow" value="удерживаем предоплату"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Удерживаем предоплату</span></span></label>
+            <label class="choice"><input type="radio" name="noShow" value="просим полную оплату"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Просим полную оплату</span></span></label>
+            <label class="choice"><input type="radio" name="noShow" value="штраф, сумму уточню"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Штраф (сумму напишу)</span></span></label>
+            <label class="choice"><input type="radio" name="noShow" value="ничего не берём"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Ничего не берём</span></span></label>
+            <label class="choice"><input type="radio" name="noShow" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="noShowOther">Уточните</label><input id="noShowOther" name="noShowOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Что если клиент опоздал?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="late" value="сокращаем сеанс, цена та же"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сокращаем сеанс, цена та же</span></span></label>
+            <label class="choice"><input type="radio" name="late" value="сдвигаем, если возможно"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сдвигаем, если возможно</span></span></label>
+            <label class="choice"><input type="radio" name="late" value="решает мастер на месте"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Решает мастер на месте</span></span></label>
+            <label class="choice"><input type="radio" name="late" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="lateOther">Уточните</label><input id="lateOther" name="lateOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Наличные и переводы — отмечать в системе вручную?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="cashManual" value="да, отмечать вручную в админке"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, отмечать вручную в админке</span></span></label>
+            <label class="choice"><input type="radio" name="cashManual" value="нет, только безнал"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, только безнал</span></span></label>
+            <label class="choice"><input type="radio" name="cashManual" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="cashManualOther">Уточните</label><input id="cashManualOther" name="cashManualOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <h3 class="subh">Услуги и цены</h3>
+      <p class="known">Ниже — прайс из прототипа (демо). Поправьте названия, минуты и цены или добавьте свои услуги.</p>
+
+      <div class="q">
+        <fieldset>
+          <legend>Прайс из прототипа <span class="star">★</span></legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="priceListOk" value="таблица верная, оставляем"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Таблица верная, оставляем</span></span></label>
+            <label class="choice"><input type="radio" name="priceListOk" value="поправлю в таблице"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Поправлю в таблице</span></span></label>
+            <label class="choice"><input type="radio" name="priceListOk" value="пришлю свой список отдельно"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Пришлю свой список отдельно</span></span></label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="field field--wide">
+        <span class="q__label">Список услуг (название, длительность, цена)</span>
+        <table class="svc-table">
+          <thead><tr><th>Услуга</th><th>Минуты</th><th>Цена, ₽</th><th></th></tr></thead>
+          <tbody id="svcBody"></tbody>
+        </table>
+        <button type="button" class="btn btn--line btn--sm" id="addSvc">Добавить услугу</button>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Отличаются ли цена или длительность у разных мастеров?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="priceDiffers" value="нет, прайс общий"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, прайс общий</span></span></label>
+            <label class="choice"><input type="radio" name="priceDiffers" value="да, у мастеров свои цены или длительности"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, у мастеров свои цены или длительности</span></span></label>
+            <label class="choice"><input type="radio" name="priceDiffers" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="priceDiffersOther">Уточните</label><input id="priceDiffersOther" name="priceDiffersOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Есть ли комплексы (несколько услуг пакетом)?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="combos" value="нет"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет</span></span></label>
+            <label class="choice"><input type="radio" name="combos" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, опишу / другое</span></span></label>
+          </div>
+          <div class="other field"><label for="combosOther">Какие комплексы и цена</label><textarea id="combosOther" name="combosOther" rows="3" placeholder="Например: спина + ноги 80 мин — 3 500 ₽"></textarea></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Какие доп. услуги можно добавить после сеанса? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="масла"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Масла</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="доп. зоны"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Дополнительные зоны</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="продление сеанса"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Продление сеанса</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="товары к продаже"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Товары к продаже</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="ничего не добавляем"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Ничего не добавляем</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="extras" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="extrasOther">Что ещё и почём</label><input id="extrasOther" name="extrasOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Нужны ли ограничения для клиентов? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="limits" value="только женщины-клиенты"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только женщины-клиенты</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="limits" value="минимальный возраст"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Минимальный возраст</span><span class="choice__sub">Укажите в «Другое», если нужно</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="limits" value="чек-бокс противопоказаний в анкете записи"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Чек-бокс противопоказаний в анкете записи</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="limits" value="без ограничений"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Без ограничений</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="limits" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="limitsOther">Возраст или другие ограничения</label><input id="limitsOther" name="limitsOther" type="text"></div>
+        </fieldset>
+      </div>
+      <h3 class="subh">Выезд и логистика</h3>
+
+      <div class="q">
+        <fieldset>
+          <legend>Зоны и цены выезда от базы <span class="star">★</span></legend>
+          <p class="known">Как в прототипе, от ул. Амирхана Еники, 17Б:</p>
+          <table class="zones">
+            <thead><tr><th>Расстояние</th><th>Цена выезда</th></tr></thead>
+            <tbody>
+              <tr><td>до 5 км</td><td>500 ₽</td></tr>
+              <tr><td>5–10 км</td><td>800 ₽</td></tr>
+              <tr><td>10–20 км</td><td>1 200 ₽</td></tr>
+              <tr><td>20–30 км</td><td>1 800 ₽</td></tr>
+              <tr><td>дальше 30 км</td><td>расчёт вручную</td></tr>
+            </tbody>
+          </table>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="zonesOk" value="да, зоны из прототипа подходят" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, так и оставляем</span></span></label>
+            <label class="choice"><input type="radio" name="zonesOk" value="поправлю тарифы ниже"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Поправлю тарифы ниже</span></span></label>
+            <label class="choice"><input type="radio" name="zonesOk" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="zonesOkOther">Уточните</label><input id="zonesOkOther" name="zonesOkOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="zoneDetails">Комментарий к зонам или свои тарифы</label>
+        <textarea id="zoneDetails" name="zoneDetails" rows="5">до 5 км — 500 ₽
+5–10 км — 800 ₽
+10–20 км — 1 200 ₽
+20–30 км — 1 800 ₽
+дальше 30 км — расчёт вручную
+от базы: г. Казань, ул. Амирхана Еники, 17Б</textarea>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Максимальная зона обслуживания</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="maxArea" value="только Казань"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только Казань</span></span></label>
+            <label class="choice"><input type="radio" name="maxArea" value="Казань и пригороды"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Казань и пригороды</span></span></label>
+            <label class="choice"><input type="radio" name="maxArea" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="maxAreaOther">Уточните</label><input id="maxAreaOther" name="maxAreaOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="suburbs">Если выезжаете в пригороды — в какие</label>
+        <input id="suburbs" name="suburbs" type="text" placeholder="Например: Осиново, Высокая Гора, Иннополис">
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Есть ли минимальный заказ?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="minOrder" value="нет минимума"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет минимума</span></span></label>
+            <label class="choice"><input type="radio" name="minOrder" value="минимальная сумма"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Минимальная сумма</span></span></label>
+            <label class="choice"><input type="radio" name="minOrder" value="минимальная длительность"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Минимальная длительность</span></span></label>
+            <label class="choice"><input type="radio" name="minOrder" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="minOrderOther">Какой минимум</label><input id="minOrderOther" name="minOrderOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="minOrderDetails">Уточнение по минимуму (сумма или минуты)</label>
+        <input id="minOrderDetails" name="minOrderDetails" type="text" placeholder="Например: от 3 000 ₽ или от 60 минут">
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>На чём ездят мастера?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="transport" value="своя машина"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Своя машина</span></span></label>
+            <label class="choice"><input type="radio" name="transport" value="такси"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Такси</span></span></label>
+            <label class="choice"><input type="radio" name="transport" value="и машина, и такси"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">И машина, и такси</span></span></label>
+            <label class="choice"><input type="radio" name="transport" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="transportOther">Уточните</label><input id="transportOther" name="transportOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Какую паузу закладывать между заказами?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="gapMin" value="30 минут, как в прототипе"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">30 минут, как в прототипе</span></span></label>
+            <label class="choice"><input type="radio" name="gapMin" value="45 минут"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">45 минут</span></span></label>
+            <label class="choice"><input type="radio" name="gapMin" value="60 минут"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">60 минут</span></span></label>
+            <label class="choice"><input type="radio" name="gapMin" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="gapMinOther">Сколько минут</label><input id="gapMinOther" name="gapMinOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Что привозят с собой? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="bring" value="стол / кушетка"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Стол / кушетка</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="bring" value="бельё"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Бельё</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="bring" value="масла"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Масла</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="bring" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="bringOther">Что ещё</label><input id="bringOther" name="bringOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Нужен ли буфер на подготовку до и после сеанса?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="buffer" value="30 минут до и после"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">30 минут до и после</span></span></label>
+            <label class="choice"><input type="radio" name="buffer" value="только после сеанса (как запас на дорогу в прототипе)"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только после (как запас на дорогу в прототипе)</span></span></label>
+            <label class="choice"><input type="radio" name="buffer" value="не нужен, достаточно паузы между заказами"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Не нужен, достаточно паузы между заказами</span></span></label>
+            <label class="choice"><input type="radio" name="buffer" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="bufferOther">Сколько минут</label><input id="bufferOther" name="bufferOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Аренда кушетки</legend>
+          <p class="known">В прототипе — 700 ₽, если стол клиента не подходит.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="couchOk" value="700 ₽ подходит" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">700 ₽ подходит</span></span></label>
+            <label class="choice"><input type="radio" name="couchOk" value="другая цена"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другая цена</span></span></label>
+            <label class="choice"><input type="radio" name="couchOk" value="кушетку не сдаём"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Кушетку не сдаём</span></span></label>
+            <label class="choice"><input type="radio" name="couchOk" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="couchOkOther">Уточните</label><input id="couchOkOther" name="couchOkOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="couchPrice">Если цена другая — сколько, ₽</label>
+        <input id="couchPrice" name="couchPrice" type="text" inputmode="numeric" placeholder="700">
+      </div>
+      <h3 class="subh">Запись и подтверждение</h3>
+
+      <div class="q">
+        <fieldset>
+          <legend>Общие рабочие часы салона</legend>
+          <p class="known">В прототипе слоты с 09:00 до 21:00.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="hours" value="09:00–21:00, как в прототипе"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">09:00–21:00, как в прототипе</span></span></label>
+            <label class="choice"><input type="radio" name="hours" value="свои часы, укажу ниже"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Свои часы, укажу ниже</span></span></label>
+            <label class="choice"><input type="radio" name="hours" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="hoursOther">Уточните</label><input id="hoursOther" name="hoursOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="hoursDetails">Часы и дни подробно (и если у мастеров по-разному)</label>
+        <textarea id="hoursDetails" name="hoursDetails" rows="3" placeholder="Например: пн–сб 10:00–21:00, вс выходной. У Дины — пн, ср, пт"></textarea>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>За сколько минимум часов можно записаться?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="minAdvance" value="за 2 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 2 часа</span></span></label>
+            <label class="choice"><input type="radio" name="minAdvance" value="за 3 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 3 часа</span></span></label>
+            <label class="choice"><input type="radio" name="minAdvance" value="за 4 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 4 часа</span></span></label>
+            <label class="choice"><input type="radio" name="minAdvance" value="за 24 часа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">За 24 часа</span></span></label>
+            <label class="choice"><input type="radio" name="minAdvance" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="minAdvanceOther">За сколько</label><input id="minAdvanceOther" name="minAdvanceOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>На сколько дней вперёд открыта запись?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="daysAhead" value="7 дней"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">7 дней</span></span></label>
+            <label class="choice"><input type="radio" name="daysAhead" value="14 дней, как в прототипе"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">14 дней, как в прототипе</span></span></label>
+            <label class="choice"><input type="radio" name="daysAhead" value="30 дней"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">30 дней</span></span></label>
+            <label class="choice"><input type="radio" name="daysAhead" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="daysAheadOther">Сколько дней</label><input id="daysAheadOther" name="daysAheadOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Временная бронь слота (HOLD) 60 минут — подходит?</legend>
+          <p class="known">Пока Регина не подтвердила заявку, слот держится час, потом снова свободен.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="holdOk" value="60 минут подходит" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">60 минут подходит</span></span></label>
+            <label class="choice"><input type="radio" name="holdOk" value="другое время"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое время</span></span></label>
+            <label class="choice"><input type="radio" name="holdOk" value="временное бронирование не нужно"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Временное бронирование не нужно</span></span></label>
+            <label class="choice"><input type="radio" name="holdOk" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="holdOkOther">Сколько минут или как иначе</label><input id="holdOkOther" name="holdOkOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Кто подтверждает заявку? <span class="star">★</span></legend>
+          <p class="known">Как поняли: администратор одна — Регина.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="whoConfirms" value="только Регина" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только Регина</span></span></label>
+            <label class="choice"><input type="radio" name="whoConfirms" value="мастер сам подтверждает свои заявки"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Мастер сам подтверждает свои заявки</span></span></label>
+            <label class="choice"><input type="radio" name="whoConfirms" value="Регина подтверждает, мастер видит и может подтвердить"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Регина подтверждает, мастер видит и может подтвердить</span></span></label>
+            <label class="choice"><input type="radio" name="whoConfirms" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="whoConfirmsOther">Уточните</label><input id="whoConfirmsOther" name="whoConfirmsOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Кто подтверждает ночью и в выходные?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="nightConfirms" value="Регина, в любое время"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Регина, в любое время</span></span></label>
+            <label class="choice"><input type="radio" name="nightConfirms" value="только в рабочие часы, иначе заявка ждёт утра"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только в рабочие часы, иначе заявка ждёт утра</span></span></label>
+            <label class="choice"><input type="radio" name="nightConfirms" value="мастер может подтвердить сам"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Мастер может подтвердить сам</span></span></label>
+            <label class="choice"><input type="radio" name="nightConfirms" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="nightConfirmsOther">Уточните</label><input id="nightConfirmsOther" name="nightConfirmsOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Как мастера сообщают об отпусках и внезапных выходных?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="vacationHow" value="пишут Регине в Telegram"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Пишут Регине в Telegram</span></span></label>
+            <label class="choice"><input type="radio" name="vacationHow" value="сами отмечают в кабинете мастера"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сами отмечают в кабинете мастера</span></span></label>
+            <label class="choice"><input type="radio" name="vacationHow" value="и так, и так"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">И так, и так</span></span></label>
+            <label class="choice"><input type="radio" name="vacationHow" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="vacationHowOther">Уточните</label><input id="vacationHowOther" name="vacationHowOther" type="text"></div>
+        </fieldset>
+      </div>
+      <h3 class="subh">Telegram, бренд и персональные данные</h3>
+
+      <div class="q">
+        <fieldset>
+          <legend>Создать группу «Заказы салона» в Telegram?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="tgGroup" value="да, создадим группу «Заказы салона»"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, создадим группу «Заказы салона»</span></span></label>
+            <label class="choice"><input type="radio" name="tgGroup" value="нет, только личные сообщения Регине"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, только личные сообщения Регине</span></span></label>
+            <label class="choice"><input type="radio" name="tgGroup" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="tgGroupOther">Уточните</label><input id="tgGroupOther" name="tgGroupOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Должны ли мастера видеть свои заказы в боте?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="mastersSeeOrders" value="да, каждая видит свои заказы"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, каждая видит свои заказы</span></span></label>
+            <label class="choice"><input type="radio" name="mastersSeeOrders" value="нет, только Регина"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, только Регина</span></span></label>
+            <label class="choice"><input type="radio" name="mastersSeeOrders" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="mastersSeeOrdersOther">Уточните</label><input id="mastersSeeOrdersOther" name="mastersSeeOrdersOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="field">
+        <label for="botName">Название бота салона (если уже думаете)</label>
+        <input id="botName" name="botName" type="text" placeholder="Как будет называться в Telegram">
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Кто создаёт бота в BotFather?</legend>
+          <p class="hint">Токен бота в эту форму не вставляйте — передайте Алексею лично, не в чат с файлом.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="botWho" value="Регина создаст бота и передаст токен Алексею лично"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Регина создаст бота и передаст токен Алексею лично</span></span></label>
+            <label class="choice"><input type="radio" name="botWho" value="пусть поможет Алексей"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Пусть поможет Алексей</span></span></label>
+            <label class="choice"><input type="radio" name="botWho" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="botWhoOther">Уточните</label><input id="botWhoOther" name="botWhoOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Как уведомлять клиентов? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="clientNotify" value="звонок"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Звонок</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientNotify" value="сообщение в Telegram"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сообщение в Telegram</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientNotify" value="страница статуса заявки"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Страница статуса заявки</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientNotify" value="SMS"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">SMS</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientNotify" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="clientNotifyOther">Уточните</label><input id="clientNotifyOther" name="clientNotifyOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Нужен ли мессенджер MAX?</legend>
+          <p class="known">Как поняли: основной канал — Telegram, MAX, возможно, позже.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="maxNeeded" value="да, сразу"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, сразу</span></span></label>
+            <label class="choice"><input type="radio" name="maxNeeded" value="да, позже" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, позже</span></span></label>
+            <label class="choice"><input type="radio" name="maxNeeded" value="нет, только Telegram"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет, только Telegram</span></span></label>
+            <label class="choice"><input type="radio" name="maxNeeded" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="maxNeededOther">Уточните</label><input id="maxNeededOther" name="maxNeededOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Подарочные сертификаты</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="certificates" value="да, продаём на сайте"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, продаём на сайте</span></span></label>
+            <label class="choice"><input type="radio" name="certificates" value="позже"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Позже</span></span></label>
+            <label class="choice"><input type="radio" name="certificates" value="не нужны"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Не нужны</span></span></label>
+            <label class="choice"><input type="radio" name="certificates" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="certificatesOther">Номиналы или условия</label><input id="certificatesOther" name="certificatesOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Акции и промо</legend>
+          <p class="known">В прототипе: −15% на первый визит, «4+1 час», −20% к новому мастеру, −20% SPA для двоих.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="promo" value="акции из прототипа оставляем"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Акции из прототипа оставляем</span></span></label>
+            <label class="choice"><input type="radio" name="promo" value="свои акции, опишу"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Свои акции, опишу</span></span></label>
+            <label class="choice"><input type="radio" name="promo" value="без акций на старте"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Без акций на старте</span></span></label>
+            <label class="choice"><input type="radio" name="promo" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="promoOther">Уточните</label><input id="promoOther" name="promoOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="promoDetails">Свои акции или правки к акциям из прототипа</label>
+        <textarea id="promoDetails" name="promoDetails" rows="3"></textarea>
+      </div>
+      <div class="q">
+        <fieldset>
+          <legend>Отзывы на сайте</legend>
+          <p class="known">Публикуем только реальные отзывы, выдуманные не ставим.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="reviews" value="только реальные отзывы" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Только реальные отзывы</span></span></label>
+            <label class="choice"><input type="radio" name="reviews" value="на старте отзывы не публиковать"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">На старте отзывы не публиковать</span></span></label>
+            <label class="choice"><input type="radio" name="reviews" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="reviewsOther">Уточните</label><input id="reviewsOther" name="reviewsOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="reviewSource">Откуда брать отзывы, если они уже есть</label>
+        <input id="reviewSource" name="reviewSource" type="text" placeholder="Авито, Яндекс Карты, переписка…">
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Домен сайта</legend>
+          <p class="known">Домен ginaspa.ru уже зарегистрирован и привязан к серверу.</p>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="domain" value="домен ginaspa.ru оставляем" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">ginaspa.ru оставляем</span></span></label>
+            <label class="choice"><input type="radio" name="domain" value="хочу другой домен"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Хочу другой домен</span></span></label>
+            <label class="choice"><input type="radio" name="domain" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="domainOther">Какой домен</label><input id="domainOther" name="domainOther" type="text"></div>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="brandTexts">Слоган, формулировки, что обязательно должно быть в текстах</label>
+        <textarea id="brandTexts" name="brandTexts" rows="4" placeholder="Любые правки к формулировкам прототипа"></textarea>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Логотип, цвета, фото интерьера или процесса</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="logoPhotos" value="есть материалы, пришлю в MAX или Telegram"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Есть материалы, пришлю в MAX или Telegram</span></span></label>
+            <label class="choice"><input type="radio" name="logoPhotos" value="нужно помочь с фото и оформлением"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нужно помочь с фото и оформлением</span></span></label>
+            <label class="choice"><input type="radio" name="logoPhotos" value="пока ничего нет, можно стартовать с оформления прототипа"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Пока ничего нет, можно стартовать с оформления прототипа</span></span></label>
+            <label class="choice"><input type="radio" name="logoPhotos" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="logoPhotosOther">Уточните</label><input id="logoPhotosOther" name="logoPhotosOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Откуда сейчас приходят клиенты? <span class="muted">(можно несколько)</span></legend>
+          <div class="opts">
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="Instagram"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Instagram</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="VK"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">VK</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="Авито"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Авито</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="Яндекс Карты"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Яндекс Карты</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="сарафан"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Сарафан / рекомендации</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="свой сайт"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Свой сайт</span></span></label>
+            <label class="choice choice--check"><input type="checkbox" name="clientsFrom" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="clientsFromOther">Уточните</label><input id="clientsFromOther" name="clientsFromOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Согласны быть оператором персональных данных клиентов (имя, телефон, адрес) и подписать политику на сайте?</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="pdAgree" value="да, буду оператором ПДн и подпишу политику"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да, буду оператором и подпишу политику</span></span></label>
+            <label class="choice"><input type="radio" name="pdAgree" value="есть вопросы, сначала обсудим"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Есть вопросы, сначала обсудим</span></span></label>
+            <label class="choice"><input type="radio" name="pdAgree" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="pdAgreeOther">Вопрос или комментарий</label><input id="pdAgreeOther" name="pdAgreeOther" type="text"></div>
+        </fieldset>
+      </div>
+
+      <div class="q">
+        <fieldset>
+          <legend>Срок хранения заявок</legend>
+          <div class="opts">
+            <label class="choice"><input type="radio" name="pdStore" value="1 год"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">1 год</span></span></label>
+            <label class="choice"><input type="radio" name="pdStore" value="3 года"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">3 года</span></span></label>
+            <label class="choice"><input type="radio" name="pdStore" value="пока не решила"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Пока не решила</span></span></label>
+            <label class="choice"><input type="radio" name="pdStore" value="__other__"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Другое</span></span></label>
+          </div>
+          <div class="other field"><label for="pdStoreOther">Свой срок</label><input id="pdStoreOther" name="pdStoreOther" type="text"></div>
+        </fieldset>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-comments">
+      <div class="sec__head">
+        <h2>4. Свободные комментарии</h2>
+        <p class="muted">Всё, что важно, но не попало в вопросы: пожелания, исключения, как вы работаете сейчас.</p>
+      </div>
+      <div class="field">
+        <label for="comments">Комментарий</label>
+        <textarea id="comments" name="comments" rows="6" placeholder="Пишите в свободной форме"></textarea>
+      </div>
+    </section>
+  </form>
+
+  <p class="anketa-foot"><a href="../">← Вернуться к прототипу сайта</a> · <a href="../admin/">Админка (демо)</a></p>
+</main>
+
+<div class="actions-bar">
+  <div class="actions-bar__inner">
+    <button type="button" class="btn btn--gold" id="btnDownload">Скачать ответы (.txt)</button>
+    <button type="button" class="btn btn--line" id="btnCopy">Скопировать</button>
+    <button type="button" class="btn btn--line" id="btnClear">Очистить</button>
+    <p class="save-state" id="saveState" role="status"></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<template id="staffTpl">
+  <article class="card staff" data-staff>
+    <div class="staff__head">
+      <h3>Сотрудница <span class="staff-n">1</span></h3>
+      <button type="button" class="btn btn--line btn--sm staff-remove">Удалить</button>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Имя для сайта</label><input name="staff_name" type="text" autocomplete="off" placeholder="Как подписать на сайте"></div>
+      <div class="field"><label>Роль / услуги</label><input name="staff_role" type="text" autocomplete="off" placeholder="Например: классический массаж"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Телефон</label><input name="staff_phone" type="tel" autocomplete="off" inputmode="tel"></div>
+      <div class="field"><label>Telegram</label><input name="staff_telegram" type="text" autocomplete="off" placeholder="@username"></div>
+    </div>
+    <div class="q">
+      <fieldset data-self>
+        <legend>Самозанятая?</legend>
+        <div class="opts">
+          <label class="choice"><input type="radio" name="staff_self" value="да" checked> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Да</span></span></label>
+          <label class="choice"><input type="radio" name="staff_self" value="нет"> <span class="choice__mark"></span><span class="choice__main"><span class="choice__title">Нет</span></span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="field"><label>График</label><textarea name="staff_schedule" rows="2" placeholder="Например: пн–пт 10:00–20:00, сб 11:00–18:00, вс выходной"></textarea></div>
+    <div class="field"><label>Районы выезда</label><input name="staff_areas" type="text" placeholder="Например: вся Казань или Советский и Ново-Савиновский"></div>
+  </article>
+</template>
+
+<script src="anketa.js"></script>
+</body>
+</html>
